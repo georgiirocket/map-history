@@ -1,0 +1,29 @@
+@import './default';
+
+.leaflet-custom {
+
+    .leaflet-control-zoom-out,
+    .leaflet-control-zoom-in,
+    .leaflet-control-attribution {
+        main[data-theme="dark"] & {
+            background: var(--DARK_BACKGROUND);
+            color: var(--COLOR_TEXT_LIGT_IN_DARK);
+        }
+    }
+
+    .leaflet-control-attribution {
+        border-top-left-radius: 5px;
+    }
+
+    .popup_theme {
+
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip {
+            main[data-theme="dark"] & {
+                background: var(--DARK_BACKGROUND);
+                color: var(--COLOR_TEXT_LIGT_IN_DARK);
+            }
+        }
+
+    }
+}

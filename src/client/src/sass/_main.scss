@@ -1,0 +1,48 @@
+@import './default.scss';
+
+.main-box {
+    @extend %width-full;
+    position: relative;
+
+    .btn-mini-screen {
+        animation: leftSlide 250ms 1;
+        display: none;
+        background: var(--ORANGE_COLOR);
+        width: 30px;
+        height: 30px;
+        color: var(--WHITE_COLOR);
+        position: absolute;
+        border-radius: 0;
+        padding: 0;
+        bottom: 5px;
+        left: 5px;
+        z-index: 401;
+
+        main[data-theme="dark"] & {
+            color: var(--DARK_BACKGROUND);
+        }
+
+        @media (max-height: 325px) and (orientation: landscape) {
+            display: block;
+        }
+
+        svg {
+            width: 70%;
+            height: 100%;
+        }
+
+
+    }
+}
+
+@keyframes leftSlide {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

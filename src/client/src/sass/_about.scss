@@ -1,0 +1,55 @@
+@import './default';
+
+.about-container {
+    @extend %width-full;
+    @extend %fade-animate;
+    @extend %background-image;
+    @extend %grid-box-def;
+    @extend %rc;
+    overflow: hidden;
+
+    .rc {
+        height: 98%;
+
+        .cust-area {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+
+            @media (max-width: 576px) {
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+
+            .img-cust {
+                height: 250px;
+
+                @media (max-width: 576px) {
+                    height: 100px;
+                }
+
+                @media (max-height: 325px) and (orientation: landscape) {
+                    display: none;
+                }
+            }
+
+            .src-content {
+                @extend %scroll-none;
+                height: calc(100% - 250px);
+                overflow: auto;
+                padding: 1rem;
+
+                @media (max-width: 576px) {
+                    height: calc(100% - 100px);
+                }
+
+                @media (max-height: 325px) and (orientation: landscape) {
+                    height: 100%;
+                }
+            }
+
+        }
+    }
+}

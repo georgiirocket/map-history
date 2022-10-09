@@ -1,0 +1,34 @@
+@import './default';
+
+.photo-card-container {
+    box-shadow: $card-box-shadow;
+
+    .ph-box {
+        width: 345px;
+        height: 345px;
+        position: relative;
+
+        .sckell {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .c-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    }
+}

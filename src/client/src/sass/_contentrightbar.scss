@@ -1,0 +1,98 @@
+@import './default';
+
+.mrb-content {
+    @extend %width-full;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    animation: long_fade_rb calc(var(--DELAY_SHOW_MENU) * 1ms) 1;
+
+
+    .t-content {
+        width: 100%;
+        height: calc(100% - 35px);
+        overflow-y: auto;
+
+        &::-webkit-scrollbar-track {
+            border-radius: 5px;
+            margin-top: 32px;
+        }
+
+        @media (max-width: 576px) {
+            &::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+        }
+
+        @media (max-height: 325px) and (orientation: landscape) {
+            &::-webkit-scrollbar-track {
+                margin-top: 0;
+            }
+        }
+
+        .n-block {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            left: 0;
+            background: white;
+
+            main[data-theme="dark"] & {
+                background: var(--DARK_BACKGROUND);
+            }
+
+            @media (max-height: 325px) and (orientation: landscape) {
+                position: relative;
+            }
+        }
+    }
+
+    .btn-block {
+        display: flex;
+        justify-content: space-around;
+        gap: 1rem;
+        border-top: 2px solid transparent;
+        box-shadow: inset 0 -8px 4px 4px rgb(255, 255, 255),
+            inset 0 2px 4px 0px rgba(12, 12, 13, 0.2);
+        box-sizing: border-box;
+        padding-top: .5rem;
+
+        main[data-theme="dark"] & {
+            border-top: 2px solid var(--DARK_BORDERCOLOR);
+            box-shadow: none;
+        }
+
+        svg {
+            cursor: pointer;
+            transition: color .2s ease;
+
+            @media (hover: hover) {
+                &:hover {
+                    color: var(--ORANGE_COLOR);
+                }
+            }
+        }
+
+        .resize {
+            @media (max-width: 576px) {
+                display: none;
+            }
+        }
+    }
+}
+
+@keyframes long_fade_rb {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

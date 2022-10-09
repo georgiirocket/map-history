@@ -1,0 +1,8 @@
+@import './default';
+
+.map-page {
+    @extend %width-full;
+    @extend %fade-animate;
+    position: relative;
+    overflow: hidden;
+}

@@ -1,0 +1,17 @@
+.t-cust {
+    .animate-tct {
+        animation: test calc(var(--DELAY_ANIMATE_NAMESPACE) * 1ms) 1;
+    }
+}
+
+@keyframes test {
+    0% {
+        transform: translateX(15px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

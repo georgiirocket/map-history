@@ -1,0 +1,21 @@
+@import './default';
+
+.info-btn {
+    @extend %fade-animate;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    left: 12px;
+    top: 85px;
+    z-index: 401;
+    background: white;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    main[data-theme="dark"] & {
+        background: var(--DARK_BACKGROUND);
+    }
+}

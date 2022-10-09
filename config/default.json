@@ -1,0 +1,6 @@
+{
+    "port_server": 5006,
+    "mongo_url": "mongodb://localhost:27017/map-history",
+    "version": "1.0",
+    "secretKey": "m1h44_mpo12LL@@"
+}

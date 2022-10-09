@@ -1,0 +1,39 @@
+.alert-map {
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    z-index: 403;
+    max-width: calc(100% - 80px);
+    max-height: calc(100% - 75px);
+    overflow-y: auto;
+    transition: all .3s ease;
+
+    div[data-mapbar="close"] & {
+        max-height: calc(100% - 31px);
+    }
+
+    @media (max-height: 325px) and (orientation: landscape) {
+        max-height: calc(100% - 90px);
+    }
+}
+
+.alertm-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.alertm-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.alertm-exit {
+    opacity: 1;
+}
+
+.alertm-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+}

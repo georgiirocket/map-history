@@ -1,0 +1,73 @@
+@import './default';
+
+.mb-container {
+    width: calc(100% - 10px);
+    position: absolute;
+    left: 5px;
+    bottom: 20px;
+    z-index: 400;
+    background: white;
+    color: black;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    transition: all .3s ease;
+
+    @media (max-height: 325px) and (orientation: landscape) {
+        bottom: 40px
+    }
+
+    svg {
+        cursor: pointer;
+    }
+
+    main[data-theme="dark"] & {
+        background: var(--DARK_BACKGROUND);
+        color: var(--COLOR_TEXT_LIGT_IN_DARK);
+    }
+
+    .mb-scroll-container {
+        width: calc(100% - 48px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .scroll {
+            @extend %width-full;
+            animation: fade calc(var(--DELAY_SHOW_MENU) *2 * 1ms) 1;
+            width: calc(100% - 48px);
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+
+            &::-webkit-scrollbar {
+                width: 0px;
+                height: 0px;
+            }
+
+            button {
+                padding: 0;
+                min-width: auto;
+                white-space: nowrap;
+            }
+
+            button:first-child {
+                margin-left: auto;
+            }
+
+            button:last-child {
+                margin-right: auto;
+            }
+        }
+    }
+
+    .cust-icon-btn {
+        padding: 0;
+    }
+}
+
+.hide-mb {
+    width: 58px;
+}

@@ -1,0 +1,68 @@
+@import './_default.scss';
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    @extend %width-full;
+}
+
+#root {
+    @extend %width-full;
+}
+
+.main {
+    @extend %width-full;
+    position: relative;
+}
+
+.m-container {
+    @extend %width-full;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: calc(100% - 52px) 4px 48px;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+
+    @media (max-height: 325px) and (orientation: landscape) {
+        grid-template-rows: calc(100% - 4px) 4px 0;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+
+    main[data-theme="dark"] & {
+        background: var(--DARK_COLOR);
+    }
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--ORANGE_COLOR);
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.Toastify__toast-theme--dark {
+    background: var(--DARK_BACKGROUND);
+    box-shadow: 0px 0px 4px 1px var(--DARK_COLOR);
+    box-sizing: border-box;
+}
+
+.Toastify__progress-bar {
+    background: var(--ORANGE_COLOR);
+}

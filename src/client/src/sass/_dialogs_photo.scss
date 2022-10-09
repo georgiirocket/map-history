@@ -1,0 +1,64 @@
+@import './default.scss';
+
+.dialog-pp-container {
+    width: 100%;
+    height: 100%;
+
+    .dpp-content {
+        height: 100%;
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: 49px calc(100% - 103px) 54px;
+
+        .custom-title {
+            border-bottom: 1px solid $light-line-color;
+            padding: 8px;
+
+            [data-theme-html="dark"] & {
+                border-bottom: 1px solid $dark-line-color;
+            }
+        }
+
+        .center-photo-box {
+            padding: 1rem;
+            overflow-y: auto;
+            @extend %dialogs-scroll;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-block {
+            border-top: 1px solid $light-line-color;
+
+            [data-theme-html="dark"] & {
+                border-top: 1px solid $dark-line-color;
+            }
+        }
+
+        .avatar-enter {
+            opacity: 0.01;
+        }
+
+        .avatar-enter-active {
+            opacity: 1;
+            transition: opacity 300ms ease-in;
+        }
+
+        .avatar-exit {
+            opacity: 1;
+        }
+
+        .avatar-exit-active {
+            opacity: 0.01;
+            transform: scale(0.2);
+            transition: all 300ms ease-in;
+        }
+
+        .inp-file {
+            display: none;
+        }
+    }
+}

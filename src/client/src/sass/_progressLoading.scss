@@ -1,0 +1,11 @@
+.pr-loading {
+    background: var(--BACKGROUND_NAV) !important;
+
+    span {
+        background: var(--ORANGE_COLOR) !important;
+
+        main[data-load="false"] & {
+            background: var(--BACKGROUND_NAV) !important;
+        }
+    }
+}

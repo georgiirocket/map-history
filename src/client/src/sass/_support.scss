@@ -1,0 +1,56 @@
+@import './default';
+
+.support-page {
+    @extend %width-full;
+    @extend %fade-animate;
+    @extend %background-image;
+    @extend %grid-box-def;
+    @extend %rc;
+    overflow: auto;
+
+
+    .rc {
+        width: 576px;
+
+        @media (max-width: 576px) {
+            width: 98%;
+
+            .custom-support-stepper {
+                display: none;
+            }
+        }
+
+        .content-wrapper {
+            padding: 1rem;
+
+            @media (max-width: 576px) {
+                padding: 1rem 0;
+            }
+
+            .cust-ta {
+                @extend %text-area-default;
+            }
+
+            .l-block-enter {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            .l-block-enter-active {
+                opacity: 1;
+                transform: translateX(0);
+                transition: opacity 300ms, transform 300ms;
+            }
+
+            .l-block-exit {
+                opacity: 1;
+            }
+
+            .l-block-exit-active {
+                opacity: 0;
+                transform: scale(0.9);
+                transition: opacity 300ms, transform 300ms;
+            }
+        }
+    }
+}

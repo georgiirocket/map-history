@@ -1,0 +1,103 @@
+@import './default';
+
+.loading-container {
+    @extend %width-full;
+    position: absolute;
+
+    .wave-center {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #fff;
+
+        [data-theme-html="dark"] & {
+            background: $dark-background;
+        }
+
+        .wave {
+            width: 5px;
+            height: 100px;
+            background: linear-gradient(45deg, $orange-color, $orange-color);
+            margin: 10px;
+            animation: wave 1s linear infinite;
+            border-radius: 20px;
+
+            &:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+
+            &:nth-child(3) {
+                animation-delay: 0.2s;
+            }
+
+            &:nth-child(4) {
+                animation-delay: 0.3s;
+            }
+
+            &:nth-child(5) {
+                animation-delay: 0.4s;
+            }
+
+            &:nth-child(6) {
+                animation-delay: 0.5s;
+            }
+
+            &:nth-child(7) {
+                animation-delay: 0.6s;
+            }
+
+            &:nth-child(8) {
+                animation-delay: 0.7s;
+            }
+
+            &:nth-child(9) {
+                animation-delay: 0.8s;
+            }
+
+            &:nth-child(10) {
+                animation-delay: 0.9s;
+            }
+        }
+    }
+
+    .load-tr-enter {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    .load-tr-enter-active {
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 300ms, transform 300ms;
+    }
+
+    .load-tr-exit {
+        opacity: 1;
+    }
+
+    .load-tr-exit-active {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 300ms, transform 300ms;
+    }
+
+}
+
+@keyframes wave {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}

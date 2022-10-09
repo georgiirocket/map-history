@@ -1,0 +1,10 @@
+@import './default';
+
+.register-box {
+    @extend %width-full;
+    @extend %fade-animate;
+    @extend %background-image;
+    @extend %grid-box-def;
+    @extend %rc;
+    overflow: auto;
+}
