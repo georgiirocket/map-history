@@ -1,10 +1,9 @@
 import express, { Application } from 'express';
 import config from "config"
-import { Server as ServerIO } from "socket.io"
-import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interface/socket_if'
 import { json, urlencoded } from "body-parser"
 import cors from "cors"
 import ServerHTTP from "http"
+import { create_socket_server } from './api/socketRoutes/s_server';
 import mongoose from 'mongoose';
 import { auth } from './handlers/middleware'
 import checknicknameRoute from './api/checknickname'
@@ -24,17 +23,7 @@ app.use(urlencoded({ extended: true }))
 app.use(cors())
 
 const server = ServerHTTP.createServer(app)
-const io = new ServerIO<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(server, {
-    cors: {
-        origin: [
-            "http://192.168.31.136:3500",
-            "http://localhost:3500",
-            "http://192.168.1.34:3500"
-        ],
-        methods: ["GET", "POST"]
-    }
-})
-io.on('connection', (socket) => console.log("Connected sockedID: ", socket.id))
+const io = create_socket_server(server)
 app.use((req, _, next) => { req.io = io; next(); })
 
 app.use("/api/check-nickname", checknicknameRoute)
