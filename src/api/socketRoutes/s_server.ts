@@ -12,6 +12,8 @@ export const create_socket_server = (server: ServerHTTP.Server): ServerIO<Client
             methods: ["GET", "POST"]
         }
     })
-    io.on('connection', (socket) => console.log(socket.id))
+    io.on('connection', (socket) => {
+        console.log(socket.handshake.headers.cookie)
+    })
     return io
 }
