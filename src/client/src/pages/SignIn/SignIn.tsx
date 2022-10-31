@@ -16,33 +16,35 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from '../../hooks/useWindowResize'
 import { RequestContext } from '../../providers/Request'
-import {
-    d_dataRegisterForm,
-    d_notAccsessValidData,
-    DataRegisterFormType,
-    NotAccessValidDataType
-} from '../Register/Register'
-
 import '../../sass/_register.scss'
+
+interface NotAccessValidDataType {
+    login: boolean
+    password: boolean
+}
+interface DataRegisterFormType {
+    login: string
+    password: string
+}
+const d_notAccsessValidData: NotAccessValidDataType = {
+    login: false, password: false
+}
+const d_dataRegisterForm: DataRegisterFormType = {
+    login: "", password: ""
+}
 
 export const SignIn: React.FC = () => {
     const { signIn } = useContext(RequestContext)
     const { t } = useTranslation()
     const size = useWindowSize()
+    const [notAccsessServer, setNotAcsessServer] = useState(false)
     const [dataRegisterForm, setDataRegisterForm] = useState<DataRegisterFormType>(d_dataRegisterForm)
     const [notAccsessValidData, setNotAccsessValidData] = useState<NotAccessValidDataType>(d_notAccsessValidData)
     const [showPass, setShowPass] = useState<boolean>(false)
     const [blockdedForm, setBlockedForm] = useState<boolean>(false)
 
-    const handleChangeNickname = (event: ChangeEvent<HTMLInputElement>) => {
-        setDataRegisterForm(prevState => ({ ...prevState, nickname: event.target.value }))
-        if (event.target.value && (event.target.value.length < 6 || event.target.value.length > 20)) {
-            setNotAccsessValidData(prevState => ({ ...prevState, nickname: true }))
-        } else {
-            setNotAccsessValidData(prevState => ({ ...prevState, nickname: false }))
-        }
-    }
     const handleChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
+        setNotAcsessServer(false)
         let v = event.target.value
         setDataRegisterForm(prevState => ({ ...prevState, password: v }))
         if (v && v.length < 8) {
@@ -52,6 +54,7 @@ export const SignIn: React.FC = () => {
         }
     }
     const handleChangeLogin = (event: ChangeEvent<HTMLInputElement>) => {
+        setNotAcsessServer(false)
         let v = event.target.value
         setDataRegisterForm(prevState => ({ ...prevState, login: v }))
         if (v && v.length < 6) {
@@ -78,12 +81,14 @@ export const SignIn: React.FC = () => {
     }
     const submit = async () => {
         setBlockedForm(true)
-        await signIn({
+        let data = await signIn({
             login: dataRegisterForm.login,
-            password: dataRegisterForm.password,
-            nickName: dataRegisterForm.nickname
+            password: dataRegisterForm.password
         })
         setBlockedForm(false)
+        if (!data) {
+            setNotAcsessServer(true)
+        }
     }
     return (
         <div className='register-box'>
@@ -133,17 +138,11 @@ export const SignIn: React.FC = () => {
                             label="Password"
                         />
                     </FormControl>
-                    <TextField
-                        value={dataRegisterForm.nickname}
-                        onChange={handleChangeNickname}
-                        sx={{ marginBottom: '1rem' }}
-                        fullWidth={true}
-                        size={size.width < 576 ? "small" : "medium"}
-                        required
-                        label={t("registerPage.nickName")}
-                        placeholder={t("registerPage.nickName")}
-                        error={dataRegisterForm.nickname && notAccsessValidData.nickname ? true : false}
-                    />
+                    {notAccsessServer && (
+                        <Typography variant="body2" sx={{ padding: '5px 0', color: "#d32f2f" }}>
+                            {"Not accsess, please try again"}
+                        </Typography>
+                    )}
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'flex-end' }}>
                     <Button disabled={blockdedForm} onClick={clear} color="error" size="small">{t("registerPage.btn.clearTextField")}</Button>

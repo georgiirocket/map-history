@@ -15,6 +15,7 @@ export interface AddMarkerPositionType {
 export interface LoadingApp {
     loading: boolean
     loadChecknickname: boolean
+    loadCheckLogin: boolean
     loadRegister: boolean
     loadCheckToken: boolean
     loadExit: boolean

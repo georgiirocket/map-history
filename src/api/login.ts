@@ -11,7 +11,6 @@ const router = Router()
 const JWTSK: string = config.get('secretKey')
 
 interface ReqData {
-    nickName: string,
     login: string,
     password: string
 }
@@ -23,15 +22,6 @@ interface AnswRes {
 router.post("/", async (req, res) => {
     try {
         let body: ReqData = req.body
-        let checknickname = await USERS.findOne({ nickname: body.nickName })
-        if (!checknickname) {
-            res.json(<Res<null>>{
-                status: 0,
-                data: null,
-                error: "not access"
-            })
-            return
-        }
         if (!body.login || !body.password) {
             res.json(<Res<null>>{
                 status: 0,
@@ -40,11 +30,18 @@ router.post("/", async (req, res) => {
             })
             return
         }
+        let pre = await USERS.findOne({ login: body.login })
+        if (!pre) {
+            res.json(<Res<null>>{
+                status: 0,
+                data: null,
+                error: "not access"
+            })
+            return
+        }
+        const isMatchPassword = await BCrypt.compare(body.password, pre.password)
 
-        const isMatchLogin = await BCrypt.compare(body.login, checknickname.login)
-        const isMatchPassword = await BCrypt.compare(body.password, checknickname.password)
-
-        if (!isMatchLogin || !isMatchPassword) {
+        if (!isMatchPassword) {
             res.json(<Res<null>>{
                 status: 0,
                 data: null,
@@ -54,11 +51,11 @@ router.post("/", async (req, res) => {
         }
 
         const accessToken = jwt.sign({
-            userId: checknickname._id,
+            userId: pre._id,
             type: "access"
         }, JWTSK, { expiresIn: 900 })
         const refreshToken = jwt.sign({
-            userId: checknickname._id,
+            userId: pre._id,
             type: "refresh"
         }, JWTSK, { expiresIn: "12h" })
 
@@ -68,7 +65,7 @@ router.post("/", async (req, res) => {
             error: null,
             data: {
                 refresh_token: refreshToken,
-                userData: userData(checknickname)
+                userData: userData(pre)
             }
         })
 

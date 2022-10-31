@@ -38,7 +38,7 @@ export const d_dataRegisterForm: DataRegisterFormType = {
 }
 
 export const Register: React.FC = () => {
-    const { checkNickname, register } = useContext(RequestContext)
+    const { checkNickname, register, checkLogin } = useContext(RequestContext)
     const { t } = useTranslation()
     const size = useWindowSize()
     const [showPass, setShowPass] = useState<boolean>(false)
@@ -46,6 +46,8 @@ export const Register: React.FC = () => {
     const [notAccsessValidData, setNotAccsessValidData] = useState<NotAccessValidDataType>(d_notAccsessValidData)
     const [blockdedForm, setBlockedForm] = useState<boolean>(false)
     const nickname = useDebounce<string>(dataRegisterForm.nickname, 1000)
+    const login = useDebounce<string>(dataRegisterForm.login, 1000)
+
     const handleChangeNickname = (event: ChangeEvent<HTMLInputElement>) => {
         setDataRegisterForm(prevState => ({ ...prevState, nickname: event.target.value }))
         setNotAccsessValidData(prevState => ({ ...prevState, nickname: false }))
@@ -74,6 +76,12 @@ export const Register: React.FC = () => {
             setNotAccsessValidData(prevState => ({ ...prevState, nickname: true }))
         }
     }
+    const chechLogin = async (p: string) => {
+        let data = await checkLogin(p)
+        if ((data && data.created) || p.length < 6 || p.length > 20) {
+            setNotAccsessValidData(prevState => ({ ...prevState, login: true }))
+        }
+    }
     const clear = () => {
         setDataRegisterForm(d_dataRegisterForm)
         setNotAccsessValidData(d_notAccsessValidData)
@@ -99,6 +107,12 @@ export const Register: React.FC = () => {
         })
         setBlockedForm(false)
     }
+    useEffect(() => {
+        if (login) {
+            chechLogin(login)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [login])
     useEffect(() => {
         if (nickname) {
             chechNikn(nickname)

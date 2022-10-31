@@ -40,12 +40,11 @@ router.post("/", async (req, res) => {
             })
             return
         }
-        const hashLogin = await BCrypt.hash(body.login, 12)
         const hashPass = await BCrypt.hash(body.password, 12)
 
         const newUser = new USERS({
             nickname: body.nickName,
-            login: hashLogin,
+            login: body.login,
             password: hashPass
         })
         await newUser.save()

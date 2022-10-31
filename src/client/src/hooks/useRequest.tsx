@@ -3,9 +3,11 @@ import { config } from "../config/default";
 import { SR } from "../index"
 import { useActions } from './useRedux';
 import {
+    ReqDataSignIn,
     ResponseCheckNickname,
     RequestDataRegister,
-    ResponseDataRegister
+    ResponseDataRegister,
+    ResponseCheckLogin
 } from '../models/def_model'
 
 interface TypeConfig {
@@ -20,18 +22,19 @@ interface Res<T> {
     error: null | string
 }
 
-
 export interface RequestType {
     checkNickname: (p: string) => Promise<null | ResponseCheckNickname>
+    checkLogin: (p: string) => Promise<null | ResponseCheckLogin>
     register: (d: RequestDataRegister) => Promise<null | ResponseDataRegister>
     checkTokenStartApp: () => Promise<null | ResponseDataRegister>
     exit: () => Promise<null>
-    signIn: (d: RequestDataRegister) => Promise<null | ResponseDataRegister>
+    signIn: (x: ReqDataSignIn) => Promise<null | ResponseDataRegister>
 }
 
 export const useRequest = () => {
     const {
         setLoadCheckNickname,
+        setLoadCheckLogin,
         setLoadRegister,
         setUserData,
         setIsAuth,
@@ -49,6 +52,18 @@ export const useRequest = () => {
                 method: "GET"
             })
             setLoadCheckNickname(false)
+            if (res.data) {
+                return res.data.data
+            }
+            return null
+        },
+        checkLogin: async (p: string) => {
+            setLoadCheckLogin(true)
+            let res = await fetchJson<Res<ResponseCheckLogin>>({
+                url: config.apiConfig.checkLogin + p,
+                method: "GET"
+            })
+            setLoadCheckLogin(false)
             if (res.data) {
                 return res.data.data
             }
@@ -90,7 +105,6 @@ export const useRequest = () => {
             return null
         },
         exit: async () => {
-
             setLoadExit(true)
             let res = await reqAuth<Res<null>>({
                 url: config.apiConfig.exit,
@@ -104,12 +118,12 @@ export const useRequest = () => {
             }
             return null
         },
-        signIn: async (d: RequestDataRegister) => {
+        signIn: async (x: ReqDataSignIn) => {
             setLoadSignIn(true)
             let res = await fetchJson<Res<ResponseDataRegister>>({
                 url: config.apiConfig.login,
                 method: "POST",
-                data: d
+                data: x
             })
             setLoadSignIn(false)
             if (res.data && res.data.status) {

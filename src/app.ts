@@ -7,6 +7,7 @@ import { create_socket_server } from './api/socketRoutes/s_server';
 import mongoose from 'mongoose';
 import { auth } from './handlers/middleware'
 import checknicknameRoute from './api/checknickname'
+import checkLogin from './api/checkLogin'
 import registerRoute from "./api/register"
 import loginRoute from "./api/login"
 import exitRoute from './api/exit'
@@ -27,6 +28,7 @@ const io = create_socket_server(server)
 app.use((req, _, next) => { req.io = io; next(); })
 
 app.use("/api/check-nickname", checknicknameRoute)
+app.use("/api/check-login", checkLogin)
 app.use("/api/register", registerRoute)
 app.use("/api/login", loginRoute)
 app.use("/api/exit", auth, exitRoute)

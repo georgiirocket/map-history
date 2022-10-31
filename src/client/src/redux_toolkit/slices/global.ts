@@ -11,6 +11,7 @@ const initialState: GlobalInit = {
     load: {
         loading: false,
         loadChecknickname: false,
+        loadCheckLogin: false,
         loadRegister: false,
         loadCheckToken: false,
         loadExit: false,
@@ -60,6 +61,9 @@ const globalSlice = createSlice({
         setLoadCheckNickname: (state, action: PayloadAction<boolean>) => {
             state.load.loadChecknickname = action.payload
         },
+        setLoadCheckLogin: (state, action: PayloadAction<boolean>) => {
+            state.load.loadCheckLogin = action.payload
+        },
         setLoadRegister: (state, action: PayloadAction<boolean>) => {
             state.load.loadRegister = action.payload
         },
@@ -78,6 +82,7 @@ const globalSlice = createSlice({
         setLoadSignIn: (state, action: PayloadAction<boolean>) => {
             state.load.loadSignIn = action.payload
         },
+
     },
 });
 
