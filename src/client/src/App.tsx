@@ -11,6 +11,7 @@ import { SubscribeProvider } from './providers/Subscribe';
 import { themeApp, themeCreate } from './styles/_default';
 import { loadFlag } from './redux_toolkit/slices/global';
 import { ToastContainer } from 'react-toastify';
+import { Register } from './pages/Register/Register';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -35,9 +36,13 @@ function App() {
               data-load={loadFlag(globalState.load)}
               className='main'>
               <div className='m-container'>
-                <Main />
-                <ProgressLoading />
-                <Navigate />
+                {globalState.readyApp ? (
+                  <>
+                    <Main />
+                    <ProgressLoading />
+                    <Navigate />
+                  </>
+                ) : <Register owner={true} />}
               </div>
               <LeftDrawer />
               <Dialogs />

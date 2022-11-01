@@ -14,6 +14,7 @@ interface ReqData {
     nickName: string,
     login: string,
     password: string
+    owner: boolean
 }
 interface AnswRes {
     refresh_token: string
@@ -45,7 +46,8 @@ router.post("/", async (req, res) => {
         const newUser = new USERS({
             nickname: body.nickName,
             login: body.login,
-            password: hashPass
+            password: hashPass,
+            role: body.owner ? ["owner", "admin", "user"] : ["user"]
         })
         await newUser.save()
 

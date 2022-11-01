@@ -22,6 +22,7 @@ export interface LoadingApp {
     loadSignIn: boolean
 }
 export interface GlobalInit {
+    readyApp: boolean
     load: LoadingApp
     isAuth: boolean
     authData: null | AuthData,

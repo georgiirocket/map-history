@@ -8,6 +8,7 @@ import { AuthData } from '../../models/authdata'
 check_language()
 
 const initialState: GlobalInit = {
+    readyApp: true,
     load: {
         loading: false,
         loadChecknickname: false,
@@ -34,6 +35,9 @@ const globalSlice = createSlice({
     name: 'global',
     initialState,
     reducers: {
+        setReadyApp: (state, action: PayloadAction<boolean>) => {
+            state.readyApp = action.payload
+        },
         navBarTougle: (state) => {
             state.navBar = !state.navBar
         },

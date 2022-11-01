@@ -20,24 +20,28 @@ import { useDebounce } from '../../hooks/useDebounce'
 
 import '../../sass/_register.scss'
 
-export interface NotAccessValidDataType {
+interface NotAccessValidDataType {
     login: boolean
     password: boolean
     nickname: boolean
 }
-export interface DataRegisterFormType {
+interface DataRegisterFormType {
     login: string
     password: string
     nickname: string
 }
-export const d_notAccsessValidData: NotAccessValidDataType = {
+const d_notAccsessValidData: NotAccessValidDataType = {
     login: false, password: false, nickname: false
 }
-export const d_dataRegisterForm: DataRegisterFormType = {
+const d_dataRegisterForm: DataRegisterFormType = {
     login: "", password: "", nickname: ""
 }
 
-export const Register: React.FC = () => {
+interface R_props {
+    owner?: boolean
+}
+
+export const Register: React.FC<R_props> = ({ owner = false }) => {
     const { checkNickname, register, checkLogin } = useContext(RequestContext)
     const { t } = useTranslation()
     const size = useWindowSize()
@@ -103,7 +107,8 @@ export const Register: React.FC = () => {
         await register({
             login: dataRegisterForm.login,
             password: dataRegisterForm.password,
-            nickName: dataRegisterForm.nickname
+            nickName: dataRegisterForm.nickname,
+            owner: owner
         })
         setBlockedForm(false)
     }
@@ -127,7 +132,7 @@ export const Register: React.FC = () => {
                         variant={size.width < 576 ? "h6" : "h5"}
                         component="div"
                     >
-                        {t("registerPage.name")}
+                        {`${t("registerPage.name")} ${owner ? "[Owner]" : ""}`}
                     </Typography>
                     <TextField
                         fullWidth={true}

@@ -7,7 +7,8 @@ export const config = {
         login: "/api/login",
         checkAccessToken: "/api/check-accesstoken",
         exit: "/api/exit",
-        updUserData: "/api/update-userdata"
+        updUserData: "/api/update-userdata",
+        checkReadyApp: "/api/check-ready",
     },
     routes: {
         map: '/map',

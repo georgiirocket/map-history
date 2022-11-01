@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import { config } from "../config/default";
 import { SR } from "../index"
@@ -7,7 +8,8 @@ import {
     ResponseCheckNickname,
     RequestDataRegister,
     ResponseDataRegister,
-    ResponseCheckLogin
+    ResponseCheckLogin,
+    ResponseDataReadyApp
 } from '../models/def_model'
 
 interface TypeConfig {
@@ -29,6 +31,7 @@ export interface RequestType {
     checkTokenStartApp: () => Promise<null | ResponseDataRegister>
     exit: () => Promise<null>
     signIn: (x: ReqDataSignIn) => Promise<null | ResponseDataRegister>
+    checkReadyApp: () => void
 }
 
 export const useRequest = () => {
@@ -40,11 +43,12 @@ export const useRequest = () => {
         setIsAuth,
         setLoadCheckToken,
         setLoadExit,
-        setLoadSignIn
+        setLoadSignIn,
+        setReadyApp
     } = useActions()
     let navigate = useNavigate()
 
-    const requst: RequestType = {
+    const request: RequestType = {
         checkNickname: async (p: string) => {
             setLoadCheckNickname(true)
             let res = await fetchJson<Res<ResponseCheckNickname>>({
@@ -81,6 +85,7 @@ export const useRequest = () => {
                 SR.set(res.data.data.refresh_token)
                 setUserData(res.data.data.userData)
                 setIsAuth(true)
+                setReadyApp(true)
                 navigate(config.routes.map)
                 return res.data.data
             }
@@ -134,10 +139,26 @@ export const useRequest = () => {
                 return res.data.data
             }
             return null
+        },
+        checkReadyApp: async () => {
+            let res = await fetchJson<Res<ResponseDataReadyApp>>({
+                url: config.apiConfig.checkReadyApp,
+                method: "GET",
+            })
+            if (res.resStatus !== 200) {
+                return
+            }
+            if (res.data && !res.data.data.ready) {
+                setReadyApp(false)
+            }
         }
     }
-
-    return requst
+    useEffect(() => {
+        request.checkTokenStartApp()
+        request.checkReadyApp()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    return request
 }
 
 async function fetchJson<T>(c: TypeConfig) {

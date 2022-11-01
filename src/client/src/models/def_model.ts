@@ -11,6 +11,7 @@ export interface RequestDataRegister {
     nickName: string
     login: string
     password: string
+    owner: boolean
 }
 export interface ReqDataSignIn {
     login: string
@@ -19,6 +20,9 @@ export interface ReqDataSignIn {
 export interface ResponseDataRegister {
     refresh_token: string
     userData: AuthData
+}
+export interface ResponseDataReadyApp {
+    ready: boolean
 }
 export interface DefResponseData {
     status: number
