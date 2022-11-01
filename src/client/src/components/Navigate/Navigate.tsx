@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom'
+import { CSSTransition } from 'react-transition-group';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -14,6 +15,8 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import LoginIcon from '@mui/icons-material/Login';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import LanguageIcon from '@mui/icons-material/Language';
+import { deepOrange } from '@mui/material/colors';
+import Avatar from '@mui/material/Avatar';
 
 import { useNavigate } from "react-router-dom"
 import { config } from '../../config/default';
@@ -55,6 +58,17 @@ export const Navigate: React.FC = () => {
                     {globalState.theme === 'light' ? <NightlightIcon /> : <LightModeIcon />}
                 </IconButton>
                 <LongMenu />
+                <CSSTransition in={globalState.isAuth} unmountOnExit timeout={500} classNames="navicon">
+                    <div>
+                        <IconButton onClick={() => navigate(config.routes.profile)} sx={{ ml: "5px" }} edge="start" color="inherit" aria-label="theme">
+                            <Avatar sx={{ width: "30px", height: "30px", bgcolor: deepOrange[500] }}
+                                alt={globalState.authData ? globalState.authData.nickname : "A"}
+                                src={globalState.authData && globalState.authData.url_avatar ? globalState.authData.url_avatar : "/image"}
+                            />
+                        </IconButton>
+                    </div>
+                </CSSTransition>
+
             </div>
         </div>
     )

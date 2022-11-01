@@ -30,6 +30,10 @@ body {
     @media (max-height: 325px) and (orientation: landscape) {
         grid-template-rows: calc(100% - 4px) 4px 0;
     }
+
+    main[data-ready-app="false"] & {
+        grid-template-rows: 100%;
+    }
 }
 
 ::-webkit-scrollbar {

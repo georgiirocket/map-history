@@ -16,6 +16,5 @@ export const AlertMap: React.FC<AlertMapProps> = ({ onClose }) => {
                 <Alert onClose={onClose} severity="info">{alertMap}</Alert>
             </div>
         </CSSTransition>
-
     )
 }

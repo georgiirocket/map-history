@@ -34,6 +34,7 @@ function App() {
               style={themeCreate(themeApp)}
               data-theme={globalState.theme}
               data-load={loadFlag(globalState.load)}
+              data-ready-app={globalState.readyApp}
               className='main'>
               <div className='m-container'>
                 {globalState.readyApp ? (

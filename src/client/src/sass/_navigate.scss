@@ -2,6 +2,7 @@
 
 .nav-conatainer {
     width: 100%;
+    overflow: hidden;
     min-height: 48px;
     background: var(--BACKGROUND_NAV);
     padding: 0 24px;
@@ -42,4 +43,27 @@
     main[data-theme="dark"] & {
         background: var(--DARK_BACKGROUND_MUI);
     }
+}
+
+.navicon-enter {
+    opacity: 0;
+    transform: translateX(100px);
+    transition: all ease 500ms;
+    // transform: scale(0.9);
+}
+
+.navicon-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 500ms, transform 500ms;
+}
+
+// .navicon-exit {
+//     opacity: 1;
+// }
+
+.navicon-exit-active {
+    opacity: 0;
+    transform: translateX(100px);
+    transition: opacity 500ms, transform 500ms;
 }
