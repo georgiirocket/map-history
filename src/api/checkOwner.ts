@@ -5,27 +5,24 @@ import { USERS } from "../schema/user"
 const router = Router()
 
 interface AnswerResponse {
-    created: boolean,
-    login: string
+    ready: boolean,
 }
 
-router.get("/:id", async (req, res) => {
+router.get("/", async (_, res) => {
     try {
-        let login = req.params.id
-        let user = await USERS.findOne({ nickname: login })
+        let owner = await USERS.findOne({ role: { $all: ["owner"] } })
         let answer: Res<AnswerResponse> = {
             status: 1,
             error: null,
             data: {
-                created: true,
-                login: login
+                ready: false
             }
         }
-        if (user) {
+        if (!owner) {
             res.json(answer)
             return
         }
-        answer.data.created = false
+        answer.data.ready = true
         res.json(answer)
 
     } catch (err: any) {
@@ -36,7 +33,7 @@ router.get("/:id", async (req, res) => {
         }
         res.status(500).json(answer)
         logs({
-            message: "Check login route fail",
+            message: "Check owner route fail",
             error: err ? err.toString() : ""
         })
     }

@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import { auth } from './handlers/middleware'
 import checknicknameRoute from './api/checknickname'
 import checkLogin from './api/checkLogin'
+import checkOwner from './api/checkOwner'
 import registerRoute from "./api/register"
 import loginRoute from "./api/login"
 import exitRoute from './api/exit'
@@ -29,6 +30,7 @@ app.use((req, _, next) => { req.io = io; next(); })
 
 app.use("/api/check-nickname", checknicknameRoute)
 app.use("/api/check-login", checkLogin)
+app.use("/api/check-ready", checkOwner)
 app.use("/api/register", registerRoute)
 app.use("/api/login", loginRoute)
 app.use("/api/exit", auth, exitRoute)

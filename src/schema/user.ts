@@ -7,6 +7,9 @@ export interface IUser {
     login: string
     password: string
     specialpermit: string[]
+    supreRoot: boolean
+    role: string[]
+    email: string
     socket: string[]
     settings: string[]
     mypoint: string[]
@@ -23,6 +26,9 @@ const users = new Schema<IUser>({
     login: { type: String, default: "" },
     password: { type: String, default: "" },
     specialpermit: { type: [String], default: [] },
+    supreRoot: { type: Boolean, default: false },
+    role: { type: [String], default: ['user'] },
+    email: { type: String, default: "" },
     socket: { type: [String], default: [] },
     settings: { type: [String], default: [] },
     mypoint: { type: [String], default: [] },

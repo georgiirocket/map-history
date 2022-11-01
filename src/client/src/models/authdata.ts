@@ -5,4 +5,5 @@ export interface AuthData {
     avatar: boolean
     url_avatar: string
     settings: string[]
+    role: string[]
 }

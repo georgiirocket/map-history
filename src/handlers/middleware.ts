@@ -15,6 +15,7 @@ export interface AuthData {
     avatar: boolean
     url_avatar: string
     settings: string[]
+    role: string[]
 }
 
 export const setCoockieToken = (req: Request, res: Response, token: string) => {
@@ -35,7 +36,8 @@ export const userData = (user: IUser): AuthData => {
         special_permit: user.specialpermit,
         avatar: user.avatar,
         url_avatar: user.url_avatar,
-        settings: user.settings
+        settings: user.settings,
+        role: user.role
     }
 }
 export const deleteCockie = (res: Response) => {
