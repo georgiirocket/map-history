@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData } from '../handlers/middleware'
-import { USERS } from "../schema/user"
+import { db } from '../db/db'
 import config from 'config'
 
 const router = Router()
@@ -16,7 +16,7 @@ interface AnswRes {
 
 router.get("/", async (req, res) => {
     try {
-        let user = await USERS.findById(req.userId)
+        let user = await db.users_model.findById(req.userId)
 
         if (!user) {
             res.json(<Res<null>>{

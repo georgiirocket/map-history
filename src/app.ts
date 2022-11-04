@@ -5,6 +5,7 @@ import cors from "cors"
 import ServerHTTP from "http"
 import { create_socket_server } from './api/socketRoutes/s_server';
 import mongoose from 'mongoose';
+import { db } from './db/db';
 import { auth } from './handlers/middleware'
 import checknicknameRoute from './api/checknickname'
 import checkLogin from './api/checkLogin'
@@ -39,7 +40,8 @@ app.use("/api/check-refreshtoken", refreshTokenRoute)
 
 async function start() {
     try {
-        await mongoose.connect(URL)
+        // await mongoose.connect(URL)
+        db.mapdb_init()
         server.listen(PORT, () => {
             console.group('Map_history')
             console.log(`Launch mode: ${VER}.`)

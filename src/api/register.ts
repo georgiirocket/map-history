@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData } from '../handlers/middleware'
-import { USERS } from "../schema/user"
+import { db } from '../db/db'
 import config from 'config'
 
 const router = Router()
@@ -24,7 +24,7 @@ interface AnswRes {
 router.post("/", async (req, res) => {
     try {
         let body: ReqData = req.body
-        let checknickname = await USERS.findOne({ nickname: body.nickName })
+        let checknickname = await db.users_model.findOne({ nickname: body.nickName })
         if (checknickname) {
             res.json(<Res<null>>{
                 status: 0,
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
         }
         const hashPass = await BCrypt.hash(body.password, 12)
 
-        const newUser = new USERS({
+        const newUser = new db.users_model({
             nickname: body.nickName,
             login: body.login,
             password: hashPass,

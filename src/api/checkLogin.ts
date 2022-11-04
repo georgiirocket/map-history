@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { USERS } from "../schema/user"
+import { db } from '../db/db'
 const router = Router()
 
 interface AnswerResponse {
@@ -12,7 +12,7 @@ interface AnswerResponse {
 router.get("/:id", async (req, res) => {
     try {
         let login = req.params.id
-        let user = await USERS.findOne({ nickname: login })
+        let user = await db.users_model.findOne({ nickname: login })
         let answer: Res<AnswerResponse> = {
             status: 1,
             error: null,

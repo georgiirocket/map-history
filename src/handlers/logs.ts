@@ -1,4 +1,4 @@
-import { LOGS } from "../schema/schema"
+import { db } from "../db/db"
 
 interface logsParams {
     message?: string,
@@ -7,7 +7,7 @@ interface logsParams {
 
 export const logs = async ({ message = "", error }: logsParams) => {
     try {
-        let newLogs = new LOGS({
+        let newLogs = new db.logs_model({
             message: message,
             error: error
         })

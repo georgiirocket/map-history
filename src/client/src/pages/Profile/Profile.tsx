@@ -18,6 +18,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
 
 import logo from '../../images/logo/logo.svg'
 import { SkeletorHidden } from '../../components/SceletorHidden/SkeletorHidden'

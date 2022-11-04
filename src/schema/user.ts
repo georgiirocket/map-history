@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose'
+import { Schema, Types } from 'mongoose'
 export interface IUser {
     _id: Types.ObjectId
     nickname: string
@@ -19,7 +19,7 @@ export interface IUser {
     active: boolean
     dateCreate: Date
 }
-const users = new Schema<IUser>({
+export const users = new Schema<IUser>({
     nickname: { type: String, default: "" },
     avatar: { type: Boolean, default: false },
     url_avatar: { type: String, default: "" },
@@ -38,4 +38,3 @@ const users = new Schema<IUser>({
     active: { type: Boolean, default: true },
     dateCreate: { type: Date, default: Date.now }
 })
-export const USERS = model<IUser>("users", users)

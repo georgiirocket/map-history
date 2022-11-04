@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData } from '../handlers/middleware'
-import { USERS } from "../schema/user"
+import { db } from '../db/db'
 import config from 'config'
 
 const router = Router()
@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
             })
             return
         }
-        let pre = await USERS.findOne({ login: body.login })
+        let pre = await db.users_model.findOne({ login: body.login })
         if (!pre) {
             res.json(<Res<null>>{
                 status: 0,

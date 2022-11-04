@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { USERS } from "../schema/user"
+import { db } from '../db/db'
 const router = Router()
 
 interface AnswerResponse {
@@ -10,7 +10,7 @@ interface AnswerResponse {
 
 router.get("/", async (_, res) => {
     try {
-        let owner = await USERS.findOne({ role: { $all: ["owner"] } })
+        let owner = await db.users_model.findOne({ role: { $all: ["owner"] } })
         let answer: Res<AnswerResponse> = {
             status: 1,
             error: null,
