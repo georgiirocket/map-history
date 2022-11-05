@@ -13,8 +13,9 @@ export interface IUser {
     socket: string[]
     settings: string[]
     mypoint: string[]
-    myFavofitePoint: string[]
+    myFavoritePoint: string[]
     mygrops: string[]
+    images: string[]
     ondelete: boolean
     active: boolean
     dateCreate: Date
@@ -32,8 +33,9 @@ export const users = new Schema<IUser>({
     socket: { type: [String], default: [] },
     settings: { type: [String], default: [] },
     mypoint: { type: [String], default: [] },
-    myFavofitePoint: { type: [String], default: [] },
+    myFavoritePoint: { type: [String], default: [] },
     mygrops: { type: [String], default: [] },
+    images: { type: [String], default: [] },
     ondelete: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
     dateCreate: { type: Date, default: Date.now }

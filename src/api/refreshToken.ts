@@ -2,7 +2,7 @@ import { Router } from 'express'
 import jwt from "jsonwebtoken"
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { setCoockieToken } from '../handlers/middleware'
+import { setCoockieToken, createToken } from '../handlers/middleware'
 import config from 'config'
 
 const router = Router()
@@ -28,15 +28,7 @@ router.post("/", async (req, res) => {
             })
             return
         }
-        const accessToken = jwt.sign({
-            userId: decoded.userId,
-            type: "access"
-        }, JWTSK, { expiresIn: 900 })
-        const refreshToken = jwt.sign({
-            userId: decoded.userId,
-            type: "refresh"
-        }, JWTSK, { expiresIn: "12h" })
-
+        const { accessToken, refreshToken } = createToken(decoded.userId)
         setCoockieToken(req, res, accessToken)
         res.json(<Res<ReqAndResponseType>>{
             status: 1,

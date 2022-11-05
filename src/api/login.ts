@@ -3,7 +3,7 @@ import BCrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { AuthData, setCoockieToken, userData } from '../handlers/middleware'
+import { AuthData, setCoockieToken, userData, createToken } from '../handlers/middleware'
 import { db } from '../db/db'
 import config from 'config'
 
@@ -49,16 +49,7 @@ router.post("/", async (req, res) => {
             })
             return
         }
-
-        const accessToken = jwt.sign({
-            userId: pre._id,
-            type: "access"
-        }, JWTSK, { expiresIn: 900 })
-        const refreshToken = jwt.sign({
-            userId: pre._id,
-            type: "refresh"
-        }, JWTSK, { expiresIn: "12h" })
-
+        const { accessToken, refreshToken } = createToken(pre._id)
         setCoockieToken(req, res, accessToken)
         res.json(<Res<AnswRes>>{
             status: 1,

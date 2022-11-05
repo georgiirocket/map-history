@@ -1,6 +1,13 @@
 import { AuthData } from '../models/authdata'
 import { Socket } from "socket.io-client";
-import { ServerToClientEvents, ClientToServerEvents } from './socket_int'
+
+export interface ServerToClientEvents {
+
+}
+
+export interface ClientToServerEvents {
+    hello: (p: string) => void;
+}
 
 export type MarkerPosition = [number, number] | null
 export type MapRightBar = "hide" | "right" | "center"
