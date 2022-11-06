@@ -9,7 +9,8 @@ import {
     RequestDataRegister,
     ResponseDataRegister,
     ResponseCheckLogin,
-    ResponseDataReadyApp
+    ResponseDataReadyApp,
+    ResponseGetImageUrl
 } from '../models/def_model'
 
 interface TypeConfig {
@@ -24,6 +25,12 @@ interface Res<T> {
     error: null | string
 }
 
+interface AnswerReqFile<T> {
+    status: 0 | 1,
+    data: null | T,
+    error: string
+}
+
 export interface RequestType {
     checkNickname: (p: string) => Promise<null | ResponseCheckNickname>
     checkLogin: (p: string) => Promise<null | ResponseCheckLogin>
@@ -32,6 +39,8 @@ export interface RequestType {
     exit: () => Promise<null>
     signIn: (x: ReqDataSignIn) => Promise<null | ResponseDataRegister>
     checkReadyApp: () => void
+    uploadAvatar: (f: File) => Promise<Res<null> | Res<string>>
+    getImageUrl: () => Promise<null | ResponseGetImageUrl>
 }
 
 export const useRequest = () => {
@@ -151,6 +160,45 @@ export const useRequest = () => {
             if (res.data && !res.data.data.ready) {
                 setReadyApp(false)
             }
+        },
+        uploadAvatar: async (f: File) => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
+            try {
+                let data = new FormData()
+                data.append('file', f)
+                let res = await fetch(config.apiConfig.uploadAvatar, {
+                    method: 'POST',
+                    body: data
+                })
+                if (res.status === 401) {
+                    updateAuth()
+                }
+                if (!res.ok) {
+                    let resError = await res.json() as Res<null>
+                    return resError
+                }
+                let resData = await res.json() as Res<string>
+                return resData
+
+            } catch (err: any) {
+                console.error(err)
+                a.error = err.toString()
+                return a
+            }
+        },
+        getImageUrl: async () => {
+            let res = await reqAuth<Res<ResponseGetImageUrl>>({
+                url: config.apiConfig.getImageUrl,
+                method: "GET"
+            })
+            if (res.data) {
+                return res.data.data
+            }
+            return null
         }
     }
     useEffect(() => {
@@ -223,7 +271,6 @@ async function fetchJson<T>(c: TypeConfig) {
         return answ
     }
 }
-
 async function reqAuth<T>(c: TypeConfig) {
     let originalConfig = c
     let res = await fetchJson<T>(originalConfig)
@@ -244,6 +291,19 @@ async function reqAuth<T>(c: TypeConfig) {
     res = await fetchJson<T>(originalConfig)
     return res
 }
+async function updateAuth() {
+    let resRefreshToken = await fetchJson({
+        url: config.apiConfig.rehreshToken,
+        method: "POST",
+        data: {
+            refresh_token: SR.get()
+        }
+    })
+    if (!resRefreshToken.resOk) {
+        window.location.reload()
+    }
+}
+
 
 
 

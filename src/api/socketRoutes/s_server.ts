@@ -1,7 +1,10 @@
 import ServerHTTP from "http"
+import fs from 'fs'
+import path from 'path'
 import config from "config"
 import { Server as ServerIO } from "socket.io"
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "../../interface/def_if"
+import { db } from "../../db/db"
 import { authSocket } from "../../handlers/middleware"
 
 const corsOrigin = config.get("cors_socket_origin") as string[]
@@ -19,7 +22,9 @@ export const create_socket_server = (server: ServerHTTP.Server): ServerIO<Client
             socket: socket,
             packet: packet[0],
             next: next,
-            authRoute: []
+            authRoute: [
+                "uploadProfileImage"
+            ]
         }))
         socket.on("hello", (p) => {
             console.log("hello", p)

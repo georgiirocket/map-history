@@ -9,6 +9,9 @@ export const config = {
         exit: "/api/exit",
         updUserData: "/api/update-userdata",
         checkReadyApp: "/api/check-ready",
+        uploadAvatar: "/api/file/avatar/upload",
+        getImageUrl: "/api/image/url",
+        getImage: "/api/file/getavatar/"
     },
     routes: {
         map: '/map',

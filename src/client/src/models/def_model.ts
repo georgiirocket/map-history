@@ -28,3 +28,6 @@ export interface DefResponseData {
     status: number
     mess: string
 }
+export interface ResponseGetImageUrl {
+    url: string[]
+}

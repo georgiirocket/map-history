@@ -39,11 +39,11 @@ export const createToken = (id: Types.ObjectId | string): { accessToken: string,
         accessToken: jwt.sign({
             userId: id,
             type: "access"
-        }, JWTSK, { expiresIn: 900 }),
+        }, JWTSK, { expiresIn: "12h" }),
         refreshToken: jwt.sign({
             userId: id,
             type: "refresh"
-        }, JWTSK, { expiresIn: "12h" })
+        }, JWTSK, { expiresIn: "24h" })
     }
 }
 
@@ -51,7 +51,6 @@ export const setCoockieToken = (req: Request, res: Response, token: string) => {
     res.setHeader('Set-Cookie', serialize('token', token, {
         httpOnly: true,
         path: '/',
-        maxAge: 900
         // secure: true,
         // sameSite: 'lax',
     }))
@@ -107,6 +106,7 @@ export const authSocket = ({ socket, next, packet, authRoute = [] }: AuthSocket)
         if (decoded.type !== "access") {
             throw new Error("fail access token")
         }
+        socket.data.userId = decoded.userId
         next()
     } catch (e) {
         console.log(e)

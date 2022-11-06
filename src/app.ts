@@ -14,6 +14,8 @@ import loginRoute from "./api/login"
 import exitRoute from './api/exit'
 import checkAccessTokenRoute from "./api/checkAccessToken"
 import refreshTokenRoute from "./api/refreshToken"
+import filesRoute from "./api/files"
+import imageUrlRoute from "./api/getImageUrl"
 
 const app: Application = express();
 const PORT: number = config.get("port_server") || 5000
@@ -28,6 +30,8 @@ const server = ServerHTTP.createServer(app)
 const io = create_socket_server(server)
 app.use((req, _, next) => { req.io = io; next(); })
 
+app.use("/api/file", auth, filesRoute)
+app.use("/api/image/url", auth, imageUrlRoute)
 app.use("/api/check-nickname", checknicknameRoute)
 app.use("/api/check-login", checkLogin)
 app.use("/api/check-ready", checkOwner)

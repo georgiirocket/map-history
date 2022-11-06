@@ -27,6 +27,7 @@
         "type": "Файл должен иметь формат: jpeg, jpg, png",
         "maxPhoto": "Максимально 5 фото"
     },
+    "errUploadAvatar": "Ошибка загрузки аватара",
     "registerPage": {
         "name": "Регистрация",
         "login": "Логин",

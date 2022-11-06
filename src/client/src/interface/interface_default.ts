@@ -7,6 +7,7 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
     hello: (p: string) => void;
+    uploadProfileImage: ({ file, nameFile }: { file: File, nameFile: string }) => void;
 }
 
 export type MarkerPosition = [number, number] | null
