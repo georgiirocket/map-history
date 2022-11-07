@@ -21,11 +21,11 @@ const sizeLimitFile: number = 10048576
 const possibleTypeFile: string[] = ["image/jpeg", "image/jpg", "image/png"]
 
 export const PhotoDialogs: React.FC = () => {
-    const { getImageUrl, uploadAvatar } = useContext(RequestContext)
+    const { getImageUrl, uploadAvatar, changeActiveAvatar, removeAvatar } = useContext(RequestContext)
     const [loading, setLoading] = useState<boolean>(true)
     const [url, setUrl] = useState<AvatarModel[]>([])
     const { dialogs, authData } = useAppSelector(state => state.global)
-    const { setProfilePhoto } = useActions()
+    const { setProfilePhoto, setUrlAvatar } = useActions()
     const { t } = useTranslation()
     const removeItem = (id: string) => setUrl(prevState => prevState.filter(u => u.id !== id))
     const getData = async () => {
@@ -81,6 +81,35 @@ export const PhotoDialogs: React.FC = () => {
             input.click()
         }
     }
+    const tougleUsePhoto = async (a: string) => {
+        const res = await changeActiveAvatar(a)
+        if (res.error) {
+            toast(t("Error Request"), { autoClose: 2000 })
+            return
+        }
+        if (!res.data) {
+            return
+        }
+        setUrlAvatar(res.data.url_avatar)
+        setUrl(prevState => {
+            return !res.data?.url_avatar ? prevState.map(i => ({ ...i, active: false })) :
+                prevState.map(i => i.url === res.data?.url_avatar ? ({ ...i, active: true }) : ({ ...i, active: false }))
+        })
+    }
+    const remove = async (id: string) => {
+        const res = await removeAvatar(id)
+        if (res.error) {
+            toast(t("Error Request"), { autoClose: 2000 })
+            return
+        }
+        if (!res.data) {
+            return
+        }
+        if (authData?.url_avatar === res.data.deleteId) {
+            setUrlAvatar("")
+        }
+        setUrl(prevState => prevState.filter(i => i.url !== res.data.deleteId))
+    }
     useEffect(() => {
         getData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,15 +136,16 @@ export const PhotoDialogs: React.FC = () => {
                             <PhotoCard
                                 src={config.apiConfig.getImage + u.url}
                                 active={u.active}
-                                unUse={() => console.log('un_use')}
-                                remove={() => removeItem(u.id)}
-                                use={() => console.log('use')}
+                                unUse={() => tougleUsePhoto("")}
+                                remove={() => remove(u.url)}
+                                use={() => tougleUsePhoto(u.url)}
                             />
                         </CSSTransition>
                     ))}
 
                 </TransitionGroup>
                 <DialogActions className='btn-block'>
+
                     <Button onClick={() => setProfilePhoto(false)}>{t("profile.btn.close")}</Button>
                     <Button onClick={trigger}>{t("profile.btn.addPhoto")}</Button>
                 </DialogActions>

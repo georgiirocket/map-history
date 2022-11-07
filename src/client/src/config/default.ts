@@ -11,6 +11,7 @@ export const config = {
         checkReadyApp: "/api/check-ready",
         uploadAvatar: "/api/file/avatar/upload",
         getImageUrl: "/api/image/url",
+        changeImageActive: "/api/image/url/active",
         getImage: "/api/file/getavatar/"
     },
     routes: {

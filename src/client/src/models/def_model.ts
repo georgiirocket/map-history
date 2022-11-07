@@ -31,3 +31,9 @@ export interface DefResponseData {
 export interface ResponseGetImageUrl {
     url: string[]
 }
+export interface ChangeActiveAvatar {
+    url_avatar: string
+}
+export interface ResRemoveAvatar {
+    deleteId: string
+}

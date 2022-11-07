@@ -63,12 +63,11 @@ export const Navigate: React.FC = () => {
                         <IconButton onClick={() => navigate(config.routes.profile)} sx={{ ml: "5px" }} edge="start" color="inherit" aria-label="theme">
                             <Avatar sx={{ width: "30px", height: "30px", bgcolor: deepOrange[500] }}
                                 alt={globalState.authData ? globalState.authData.nickname : "A"}
-                                src={globalState.authData && globalState.authData.url_avatar ? globalState.authData.url_avatar : "/image"}
+                                src={globalState.authData && globalState.authData.url_avatar ? config.apiConfig.getImage + globalState.authData.url_avatar : "/image"}
                             />
                         </IconButton>
                     </div>
                 </CSSTransition>
-
             </div>
         </div>
     )

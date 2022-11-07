@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppSelector, useActions } from '../../hooks/useRedux'
 import { useWindowSize } from '../../hooks/useWindowResize';
 import { useSaveScroll } from '../../hooks/useSaveScroll';
+import { config } from '../../config/default';
 import '../../sass/_profile.scss'
 
 export const Profile: React.FC = () => {
@@ -87,8 +88,8 @@ export const Profile: React.FC = () => {
                     </SkeletorHidden>
                     <div className='avatar-wrapper'>
                         <div className='avatar-box'>
-                            {authData?.avatar ?
-                                <Avatar onClick={openProfilePhoto} className='avatar-cust' alt="photo-user" src={authData.url_avatar} /> :
+                            {authData?.url_avatar ?
+                                <Avatar onClick={openProfilePhoto} className='avatar-cust' alt={authData.nickname} src={config.apiConfig.getImage + authData.url_avatar} /> :
                                 <Avatar onClick={openProfilePhoto} className='avatar-cust' sx={{ bgcolor: deepOrange[500] }}>{authData?.nickname.split('')[0] ?? 'A'}</Avatar>
                             }
                             <AddPhotoAlternateIcon onClick={openProfilePhoto} className='ed-photo' />

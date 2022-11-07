@@ -12,6 +12,9 @@ import { themeApp, themeCreate } from './styles/_default';
 import { loadFlag } from './redux_toolkit/slices/global';
 import { ToastContainer } from 'react-toastify';
 import { Register } from './pages/Register/Register';
+import { RequestProvider } from './providers/Request';
+import { SocketProvider } from './providers/Socket'
+
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -20,8 +23,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 import 'react-toastify/dist/ReactToastify.css';
 import 'leaflet/dist/leaflet.css';
 import './sass/_app.scss'
-import { RequestProvider } from './providers/Request';
-import { SocketProvider } from './providers/Socket'
+
 
 function App() {
   const globalState = useSelector((state: RootState) => state.global)

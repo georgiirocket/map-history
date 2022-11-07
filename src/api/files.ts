@@ -1,10 +1,14 @@
 import { Router } from 'express'
-import mongoose from 'mongoose';
+import mongoose, { Mongoose } from 'mongoose';
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { db } from '../db/db'
 import { upload } from "../handlers/gridFSStorage"
 const router = Router()
+
+interface AnswerDeleteAvatar {
+    deleteId: string
+}
 
 router.post('/avatar/upload', upload.single('file'), async (req, res) => {
     try {
@@ -45,7 +49,7 @@ router.post('/avatar/upload', upload.single('file'), async (req, res) => {
 });
 router.get("/getavatar/:id", async (req, res) => {
     try {
-        var id = new mongoose.Types.ObjectId(req.params.id);
+        const id = new mongoose.Types.ObjectId(req.params.id);
         db.gfs.files.findOne({ _id: id, metadata: { ondelete: false } }, (err, file) => {
             if (!file || file.length === 0) {
                 return res.status(404).json({
@@ -74,6 +78,40 @@ router.get("/getavatar/:id", async (req, res) => {
         res.status(500).json(answer)
         logs({
             message: "Get avatar route fail",
+            error: err ? err.toString() : ""
+        })
+    }
+})
+router.delete("/getavatar/:id", async (req, res) => {
+    try {
+        const id = req.params.id
+        await db.gridfsBucket.delete(new mongoose.Types.ObjectId(id))
+        let user = await db.users_model.findById(req.userId)
+        if (!user) {
+            throw new Error("not found user")
+        }
+        if (user.url_avatar === id) {
+            user.url_avatar = ""
+        }
+        user.images = user.images.filter(i => i !== id)
+        await user.save()
+        const answer: Res<AnswerDeleteAvatar> = {
+            status: 1,
+            error: null,
+            data: {
+                deleteId: id
+            }
+        }
+        res.json(answer)
+    } catch (err: any) {
+        const answer: Res<null> = {
+            status: 0,
+            data: null,
+            error: err ? err.toString() : ""
+        }
+        res.status(500).json(answer)
+        logs({
+            message: "Remove avatar route fail",
             error: err ? err.toString() : ""
         })
     }

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import { config } from "../config/default";
 import { SR } from "../index"
+import { toast } from 'react-toastify';
 import { useActions } from './useRedux';
 import {
     ReqDataSignIn,
@@ -10,7 +11,9 @@ import {
     ResponseDataRegister,
     ResponseCheckLogin,
     ResponseDataReadyApp,
-    ResponseGetImageUrl
+    ResponseGetImageUrl,
+    ChangeActiveAvatar,
+    ResRemoveAvatar
 } from '../models/def_model'
 
 interface TypeConfig {
@@ -25,12 +28,6 @@ interface Res<T> {
     error: null | string
 }
 
-interface AnswerReqFile<T> {
-    status: 0 | 1,
-    data: null | T,
-    error: string
-}
-
 export interface RequestType {
     checkNickname: (p: string) => Promise<null | ResponseCheckNickname>
     checkLogin: (p: string) => Promise<null | ResponseCheckLogin>
@@ -41,6 +38,8 @@ export interface RequestType {
     checkReadyApp: () => void
     uploadAvatar: (f: File) => Promise<Res<null> | Res<string>>
     getImageUrl: () => Promise<null | ResponseGetImageUrl>
+    changeActiveAvatar: (a: string) => Promise<Res<null> | Res<ChangeActiveAvatar>>
+    removeAvatar: (a: string) => Promise<Res<null> | Res<ResRemoveAvatar>>
 }
 
 export const useRequest = () => {
@@ -176,6 +175,8 @@ export const useRequest = () => {
                 })
                 if (res.status === 401) {
                     updateAuth()
+                    toast.error("Not auth", { autoClose: 2000 })
+                    return a
                 }
                 if (!res.ok) {
                     let resError = await res.json() as Res<null>
@@ -183,7 +184,6 @@ export const useRequest = () => {
                 }
                 let resData = await res.json() as Res<string>
                 return resData
-
             } catch (err: any) {
                 console.error(err)
                 a.error = err.toString()
@@ -199,7 +199,62 @@ export const useRequest = () => {
                 return res.data.data
             }
             return null
-        }
+        },
+        changeActiveAvatar: async (active = "") => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
+            try {
+                let res = await fetch(config.apiConfig.changeImageActive + "?" + new URLSearchParams({
+                    active
+                }))
+                if (res.status === 401) {
+                    updateAuth()
+                    toast.error("Not auth", { autoClose: 2000 })
+                    return a
+                }
+                if (!res.ok) {
+                    let resError = await res.json() as Res<null>
+                    return resError
+                }
+                let resData = await res.json() as Res<ChangeActiveAvatar>
+                return resData
+            } catch (err: any) {
+                console.error(err)
+                a.error = err.toString()
+                return a
+            }
+        },
+        removeAvatar: async (id) => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
+            try {
+                let res = await fetch(config.apiConfig.getImage + id, {
+                    method: "DELETE"
+                })
+                if (res.status === 401) {
+                    updateAuth()
+                    toast.error("Not auth", { autoClose: 2000 })
+                    return a
+                }
+                if (!res.ok) {
+                    let resError = await res.json() as Res<null>
+                    return resError
+                }
+                let resData = await res.json() as Res<ResRemoveAvatar>
+                return resData
+            } catch (err: any) {
+                console.error(err)
+                a.error = err.toString()
+                return a
+            }
+        },
+
     }
     useEffect(() => {
         request.checkTokenStartApp()

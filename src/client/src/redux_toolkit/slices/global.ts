@@ -86,7 +86,11 @@ const globalSlice = createSlice({
         setLoadSignIn: (state, action: PayloadAction<boolean>) => {
             state.load.loadSignIn = action.payload
         },
-
+        setUrlAvatar: (state, action: PayloadAction<string>) => {
+            if (state.authData) {
+                state.authData.url_avatar = action.payload
+            }
+        },
     },
 });
 
