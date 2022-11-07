@@ -15,10 +15,6 @@
     align-items: center;
     transition: all .3s ease;
 
-    @media (max-height: 325px) and (orientation: landscape) {
-        bottom: 40px
-    }
-
     svg {
         cursor: pointer;
     }
