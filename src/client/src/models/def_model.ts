@@ -37,3 +37,17 @@ export interface ChangeActiveAvatar {
 export interface ResRemoveAvatar {
     deleteId: string
 }
+export interface ResGetProfileInfo {
+    nickname: string
+    login: string
+}
+export interface ReqUpdateDataProfile {
+    login: string
+    password: string
+    nickname: string
+}
+export interface ResUpdateDataProfile {
+    nickname: string
+    login: string
+}
+

@@ -13,7 +13,10 @@ import {
     ResponseDataReadyApp,
     ResponseGetImageUrl,
     ChangeActiveAvatar,
-    ResRemoveAvatar
+    ResRemoveAvatar,
+    ResGetProfileInfo,
+    ResUpdateDataProfile,
+    ReqUpdateDataProfile
 } from '../models/def_model'
 
 interface TypeConfig {
@@ -40,6 +43,8 @@ export interface RequestType {
     getImageUrl: () => Promise<null | ResponseGetImageUrl>
     changeActiveAvatar: (a: string) => Promise<Res<null> | Res<ChangeActiveAvatar>>
     removeAvatar: (a: string) => Promise<Res<null> | Res<ResRemoveAvatar>>
+    getProfileInfo: () => Promise<Res<null> | Res<ResGetProfileInfo>>
+    updateProfile: (d: ReqUpdateDataProfile) => Promise<Res<null> | Res<ResUpdateDataProfile>>
 }
 
 export const useRequest = () => {
@@ -52,7 +57,9 @@ export const useRequest = () => {
         setLoadCheckToken,
         setLoadExit,
         setLoadSignIn,
-        setReadyApp
+        setReadyApp,
+        setLoadProfile,
+        setNewNickname
     } = useActions()
     let navigate = useNavigate()
 
@@ -254,7 +261,78 @@ export const useRequest = () => {
                 return a
             }
         },
-
+        getProfileInfo: async () => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
+            setLoadProfile(true)
+            try {
+                let res = await fetch(config.apiConfig.getProfileInfo)
+                if (res.status === 401) {
+                    updateAuth()
+                    toast.error("Not auth. Please, try again", { autoClose: 2000 })
+                    a.error = "Not auth"
+                    return a
+                }
+                setLoadProfile(false)
+                if (!res.ok) {
+                    let resError = await res.json() as Res<null>
+                    toast.error(resError.error, { autoClose: 2000 })
+                    console.error(resError.error)
+                    return resError
+                }
+                let resData = await res.json() as Res<ResGetProfileInfo>
+                return resData
+            } catch (err: any) {
+                setLoadProfile(false)
+                console.error(err)
+                a.error = err.toString()
+                toast.error(err.toString(), { autoClose: 2000 })
+                return a
+            }
+        },
+        updateProfile: async (d) => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
+            try {
+                setLoadProfile(true)
+                let res = await fetch(config.apiConfig.editProfile, {
+                    method: "PUT",
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(d)
+                })
+                setLoadProfile(false)
+                if (res.status === 401) {
+                    updateAuth()
+                    toast.error("Not auth. Please, try again", { autoClose: 2000 })
+                    a.error = "Not auth"
+                    return a
+                }
+                if (!res.ok) {
+                    let resError = await res.json() as Res<null>
+                    toast.error(resError.error, { autoClose: 2000 })
+                    console.error(resError.error)
+                    return resError
+                }
+                let resData = await res.json() as Res<ResUpdateDataProfile>
+                if (resData.data.nickname) {
+                    setNewNickname(resData.data.nickname)
+                }
+                return resData
+            } catch (err: any) {
+                console.error(err)
+                a.error = err.toString()
+                toast.error(err.toString(), { autoClose: 2000 })
+                return a
+            }
+        },
     }
     useEffect(() => {
         request.checkTokenStartApp()

@@ -28,6 +28,7 @@ export interface LoadingApp {
     loadCheckToken: boolean
     loadExit: boolean
     loadSignIn: boolean
+    loadingProfile: boolean
 }
 export interface GlobalInit {
     readyApp: boolean

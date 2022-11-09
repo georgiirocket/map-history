@@ -12,7 +12,9 @@ export const config = {
         uploadAvatar: "/api/file/avatar/upload",
         getImageUrl: "/api/image/url",
         changeImageActive: "/api/image/url/active",
-        getImage: "/api/file/getavatar/"
+        getImage: "/api/file/getavatar/",
+        getProfileInfo: "/api/profile/info",
+        editProfile: "/api/profile/edit",
     },
     routes: {
         map: '/map',

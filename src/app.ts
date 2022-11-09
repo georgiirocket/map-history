@@ -16,6 +16,7 @@ import checkAccessTokenRoute from "./api/checkAccessToken"
 import refreshTokenRoute from "./api/refreshToken"
 import filesRoute from "./api/files"
 import imageUrlRoute from "./api/getImageUrl"
+import profileRoute from "./api/profile"
 
 const app: Application = express();
 const PORT: number = config.get("port_server") || 5000
@@ -40,6 +41,7 @@ app.use("/api/login", loginRoute)
 app.use("/api/exit", auth, exitRoute)
 app.use("/api/check-accesstoken", auth, checkAccessTokenRoute)
 app.use("/api/check-refreshtoken", refreshTokenRoute)
+app.use("/api/profile", auth, profileRoute)
 
 async function start() {
     try {

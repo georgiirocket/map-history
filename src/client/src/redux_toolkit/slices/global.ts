@@ -16,7 +16,8 @@ const initialState: GlobalInit = {
         loadRegister: false,
         loadCheckToken: false,
         loadExit: false,
-        loadSignIn: false
+        loadSignIn: false,
+        loadingProfile: false
     },
     isAuth: false,
     authData: null,
@@ -89,6 +90,14 @@ const globalSlice = createSlice({
         setUrlAvatar: (state, action: PayloadAction<string>) => {
             if (state.authData) {
                 state.authData.url_avatar = action.payload
+            }
+        },
+        setLoadProfile: (state, action: PayloadAction<boolean>) => {
+            state.load.loadingProfile = action.payload
+        },
+        setNewNickname: (state, action: PayloadAction<string>) => {
+            if (state.authData) {
+                state.authData.nickname = action.payload
             }
         },
     },

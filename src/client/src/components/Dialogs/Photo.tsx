@@ -27,7 +27,6 @@ export const PhotoDialogs: React.FC = () => {
     const { dialogs, authData } = useAppSelector(state => state.global)
     const { setProfilePhoto, setUrlAvatar } = useActions()
     const { t } = useTranslation()
-    const removeItem = (id: string) => setUrl(prevState => prevState.filter(u => u.id !== id))
     const getData = async () => {
         const res = await getImageUrl()
         if (res) {

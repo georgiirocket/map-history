@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext, ChangeEvent } from 'react'
+import { RequestContext } from '../../providers/Request';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Avatar from '@mui/material/Avatar';
-import { deepOrange, deepPurple } from '@mui/material/colors';
+import { deepOrange } from '@mui/material/colors';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -30,7 +31,11 @@ import { config } from '../../config/default';
 import '../../sass/_profile.scss'
 
 export const Profile: React.FC = () => {
-    const { authData, language, theme } = useAppSelector(state => state.global)
+    const { authData, language, theme, load: { loadingProfile } } = useAppSelector(state => state.global)
+    const { updateProfile, getProfileInfo } = useContext(RequestContext)
+    const [nickname, setNickname] = useState<string>("")
+    const [login, setLogin] = useState<string>("")
+    const [password, setPassword] = useState<string>("")
     const { scrollMemory } = useAppSelector(state => state.profile)
     const { setLanguage, setProfilePhoto, setScrollMemoryProfile } = useActions()
     const [showPass, setShowPass] = useState<boolean>(false)
@@ -64,6 +69,37 @@ export const Profile: React.FC = () => {
             setAutoLanguage(e.target.checked)
         }
     }
+    const changeLogin = (e: ChangeEvent<HTMLInputElement>) => {
+        setLogin(e.target.value)
+    }
+    const changeNickname = (e: ChangeEvent<HTMLInputElement>) => {
+        setNickname(e.target.value)
+    }
+    const changePassword = (e: ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value)
+    }
+    const getData = async () => {
+        let res = await getProfileInfo()
+        if (res.data) {
+            setLogin(res.data.login)
+            setNickname(res.data.nickname)
+        }
+    }
+    const submit = async () => {
+        console.log("N", nickname)
+        console.log("L", login)
+        console.log("P", password)
+        let res = await updateProfile({ nickname, login, password })
+        if (!res.data) {
+            return
+        }
+        if (res.data.nickname) {
+            setNickname(res.data.nickname)
+        }
+        if (res.data.login) {
+            setLogin(res.data.login)
+        }
+    }
     useEffect(() => {
         let localLanguage = localStorage.getItem('lang')
         localLanguage ? setAutoLanguage(false) : setAutoLanguage(true)
@@ -72,6 +108,10 @@ export const Profile: React.FC = () => {
         let themeLocal = localStorage.getItem('theme')
         themeLocal ? setAutoTheme(false) : setAutoTheme(true)
     }, [theme])
+    useEffect(() => {
+        getData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
         <div className='profile-container'>
             <Card className="rc">
@@ -108,6 +148,9 @@ export const Profile: React.FC = () => {
                         </Typography>
                         <Divider className='div-cust' />
                         <TextField
+                            value={login}
+                            onChange={changeLogin}
+                            disabled={loadingProfile}
                             fullWidth
                             size={width < 576 ? "small" : "medium"}
                             label={t("registerPage.login")}
@@ -124,10 +167,11 @@ export const Profile: React.FC = () => {
                             fullWidth={true} variant="outlined">
                             <InputLabel htmlFor="outlined-adornment-password">{t("registerPage.password")}</InputLabel>
                             <OutlinedInput
+                                disabled={loadingProfile}
                                 placeholder={t("registerPage.password")}
                                 type={showPass ? 'text' : 'password'}
-                                // value={values.password}
-                                // onChange={handleChange('password')}
+                                value={password}
+                                onChange={changePassword}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -150,6 +194,9 @@ export const Profile: React.FC = () => {
                         </Typography>
                         <Divider className='div-cust' />
                         <TextField
+                            value={nickname}
+                            onChange={changeNickname}
+                            disabled={loadingProfile}
                             fullWidth
                             size={width < 576 ? "small" : "medium"}
                             label={t("registerPage.nickName")}
@@ -193,6 +240,12 @@ export const Profile: React.FC = () => {
                             variant="body2" gutterBottom sx={{ m: ".5rem 0" }}>
                             {t("profile.autoLanguageDescription")}
                         </Typography>
+                        <Button
+                            disabled={loadingProfile}
+                            onClick={submit}
+                            sx={{ width: "100%", bgcolor: deepOrange[400] }} variant="contained">
+                            {t("profile.upadateDataProfile")}
+                        </Button>
                     </div>
                 </div>
             </Card>
