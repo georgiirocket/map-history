@@ -18,6 +18,7 @@ import {
     ResUpdateDataProfile,
     ReqUpdateDataProfile
 } from '../models/def_model'
+import axios from "../axios/interceptors"
 
 interface TypeConfig {
     url: string
@@ -213,26 +214,21 @@ export const useRequest = () => {
                 data: null,
                 error: null
             }
-            try {
-                let res = await fetch(config.apiConfig.changeImageActive + "?" + new URLSearchParams({
-                    active
-                }))
-                if (res.status === 401) {
-                    updateAuth()
-                    toast.error("Not auth", { autoClose: 2000 })
-                    return a
-                }
-                if (!res.ok) {
-                    let resError = await res.json() as Res<null>
-                    return resError
-                }
-                let resData = await res.json() as Res<ChangeActiveAvatar>
-                return resData
-            } catch (err: any) {
-                console.error(err)
-                a.error = err.toString()
-                return a
+            let res = await axios.request({
+                method: "get",
+                url: config.apiConfig.changeImageActive,
+                params: { active }
+            })
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
             }
+            if (res.statusText === "OK") {
+                let d: Res<ChangeActiveAvatar> = res.data
+                return d
+            }
+            return a
         },
         removeAvatar: async (id) => {
             const a: Res<null> = {
@@ -240,26 +236,20 @@ export const useRequest = () => {
                 data: null,
                 error: null
             }
-            try {
-                let res = await fetch(config.apiConfig.getImage + id, {
-                    method: "DELETE"
-                })
-                if (res.status === 401) {
-                    updateAuth()
-                    toast.error("Not auth", { autoClose: 2000 })
-                    return a
-                }
-                if (!res.ok) {
-                    let resError = await res.json() as Res<null>
-                    return resError
-                }
-                let resData = await res.json() as Res<ResRemoveAvatar>
-                return resData
-            } catch (err: any) {
-                console.error(err)
-                a.error = err.toString()
-                return a
+            let res = await axios.request({
+                method: "delete",
+                url: config.apiConfig.getImage + id
+            })
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
             }
+            if (res.statusText === "OK") {
+                let d: Res<ResRemoveAvatar> = res.data
+                return d
+            }
+            return a
         },
         getProfileInfo: async () => {
             const a: Res<null> = {
@@ -268,70 +258,51 @@ export const useRequest = () => {
                 error: null
             }
             setLoadProfile(true)
-            try {
-                let res = await fetch(config.apiConfig.getProfileInfo)
-                if (res.status === 401) {
-                    updateAuth()
-                    toast.error("Not auth. Please, try again", { autoClose: 2000 })
-                    a.error = "Not auth"
-                    return a
-                }
-                setLoadProfile(false)
-                if (!res.ok) {
-                    let resError = await res.json() as Res<null>
-                    toast.error(resError.error, { autoClose: 2000 })
-                    console.error(resError.error)
-                    return resError
-                }
-                let resData = await res.json() as Res<ResGetProfileInfo>
-                return resData
-            } catch (err: any) {
-                setLoadProfile(false)
-                console.error(err)
-                a.error = err.toString()
-                toast.error(err.toString(), { autoClose: 2000 })
-                return a
+            let res = await axios.request({
+                method: "get",
+                url: config.apiConfig.getProfileInfo
+            })
+            setLoadProfile(false)
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
             }
+            if (res.statusText === "OK") {
+                let d: Res<ResGetProfileInfo> = res.data
+                return d
+            }
+            return a
         },
-        updateProfile: async (d) => {
+        updateProfile: async (data) => {
             const a: Res<null> = {
                 status: 0,
                 data: null,
                 error: null
             }
-            try {
-                setLoadProfile(true)
-                let res = await fetch(config.apiConfig.editProfile, {
-                    method: "PUT",
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify(d)
-                })
-                setLoadProfile(false)
-                if (res.status === 401) {
-                    updateAuth()
-                    toast.error("Not auth. Please, try again", { autoClose: 2000 })
-                    a.error = "Not auth"
-                    return a
+            setLoadProfile(true)
+            let res = await axios({
+                method: "put",
+                url: config.apiConfig.editProfile,
+                data: data,
+                headers: {
+                    'content-type': 'application/json'
                 }
-                if (!res.ok) {
-                    let resError = await res.json() as Res<null>
-                    toast.error(resError.error, { autoClose: 2000 })
-                    console.error(resError.error)
-                    return resError
-                }
-                let resData = await res.json() as Res<ResUpdateDataProfile>
-                if (resData.data.nickname) {
-                    setNewNickname(resData.data.nickname)
-                }
-                return resData
-            } catch (err: any) {
-                console.error(err)
-                a.error = err.toString()
-                toast.error(err.toString(), { autoClose: 2000 })
-                return a
+            })
+            setLoadProfile(false)
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
             }
+            if (res.statusText === "OK") {
+                let d: Res<ResGetProfileInfo> = res.data
+                if (d.data.nickname) {
+                    setNewNickname(d.data.nickname)
+                }
+                return d
+            }
+            return a
         },
     }
     useEffect(() => {

@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
     try {
         let body: ReqAndResponseType = req.body
         const decoded = jwt.verify(body.refresh_token, JWTSK) as decodedType
-        if (decoded.type !== "refresh") {
+        if (decoded.type === "refresh") {
             res.status(401).json(<Res<null>>{
                 status: 0,
                 data: null,

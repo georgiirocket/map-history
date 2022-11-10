@@ -40,7 +40,7 @@ router.get("/info", async (req, res) => {
             data: null,
             error: err ? err.toString() : ""
         }
-        res.status(500).json(answer)
+        res.status(500).send(answer)
         logs({
             message: "Change data profile route fail",
             error: err ? err.toString() : ""
