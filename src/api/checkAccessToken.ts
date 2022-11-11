@@ -1,13 +1,10 @@
 import { Router } from 'express'
-import jwt from "jsonwebtoken"
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData, createToken } from '../handlers/middleware'
 import { db } from '../db/db'
-import config from 'config'
 
 const router = Router()
-const JWTSK: string = config.get('secretKey')
 
 interface AnswRes {
     refresh_token: string

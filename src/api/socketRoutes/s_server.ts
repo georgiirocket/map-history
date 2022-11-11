@@ -1,13 +1,15 @@
 import ServerHTTP from "http"
-import fs from 'fs'
-import path from 'path'
-import config from "config"
 import { Server as ServerIO } from "socket.io"
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "../../interface/def_if"
-import { db } from "../../db/db"
 import { authSocket } from "../../handlers/middleware"
 
-const corsOrigin = config.get("cors_socket_origin") as string[]
+const corsOrigin = (() => {
+    if (process.env.CORS_SOCKET_ORIGIN) {
+        return process.env.CORS_SOCKET_ORIGIN.split(" ").map(i => i.trim()).filter(i => i)
+    }
+    return ([])
+})()
+
 
 export const create_socket_server = (server: ServerHTTP.Server): ServerIO<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData> => {
     const io = new ServerIO<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(server, {

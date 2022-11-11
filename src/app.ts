@@ -1,5 +1,6 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
 import express, { Application } from 'express';
-import config from "config"
 import { json, urlencoded } from "body-parser"
 import cors from "cors"
 import ServerHTTP from "http"
@@ -19,9 +20,11 @@ import imageUrlRoute from "./api/getImageUrl"
 import profileRoute from "./api/profile"
 
 const app: Application = express();
-const PORT: number = config.get("port_server") || 5000
-const URL: string = config.get("mongo_url")
-const VER: string = config.get("version")
+const PORT: number = Number(process.env.SERVER_PORT) || 5000
+const URL: string = process.env.MONGO_URL || ""
+const VER: string = process.env.VERSION || "Not version"
+
+console.log("URL: ", URL)
 
 app.use(json())
 app.use(urlencoded({ extended: true }))

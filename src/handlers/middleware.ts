@@ -6,9 +6,8 @@ import { Response, Request, NextFunction } from 'express'
 import { IUser } from '../schema/user'
 import { Res, ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from '../interface/def_if'
 import { parse } from 'cookie'
-import config from 'config'
 
-const JWTSK: string = config.get('secretKey')
+const JWTSK: string = process.env.SECRET_KEY || "111222333"
 
 export interface AuthData {
     id: string

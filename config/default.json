@@ -1,11 +1,1 @@
-{
-    "port_server": 5006,
-    "mongo_url": "mongodb://localhost:27017/map-history",
-    "version": "1.0",
-    "secretKey": "m1h44_mpo12LL@@",
-    "cors_socket_origin": [
-        "http://192.168.31.136:3500",
-        "http://localhost:3500",
-        "http://192.168.1.34:3500"
-    ]
-}
+{}
