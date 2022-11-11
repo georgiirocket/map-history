@@ -24,8 +24,6 @@ const PORT: number = Number(process.env.SERVER_PORT) || 5000
 const URL: string = process.env.MONGO_URL || ""
 const VER: string = process.env.VERSION || "Not version"
 
-console.log("URL: ", URL)
-
 app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(cors())

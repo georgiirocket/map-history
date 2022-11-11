@@ -26,7 +26,6 @@ router.get("/info", async (req, res) => {
             login: ""
         }
     }
-    console.log(req.io)
     try {
         const user = await db.users_model.findById(req.userId)
         if (!user) {
