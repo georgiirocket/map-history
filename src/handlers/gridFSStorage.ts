@@ -1,9 +1,8 @@
 import multer from 'multer'
-import config from "config"
 import { GridFsStorage } from "multer-gridfs-storage"
 import { FileInfo } from "../interface/def_if"
 
-const URL: string = config.get("mongo_url")
+const URL: string = process.env.MONGO_URL || ""
 
 const storage = new GridFsStorage({
     url: URL,

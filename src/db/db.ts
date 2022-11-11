@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
-import config from "config"
 import { ILogs, logs, IEvent, event } from "../schema/schema"
 import { IUser, users } from "../schema/user"
 import Grid from "gridfs-stream"
 
-const URL: string = config.get("mongo_url")
+const URL: string = process.env.MONGO_URL || ""
 
 class db_connect {
     #mapDB: mongoose.Connection
