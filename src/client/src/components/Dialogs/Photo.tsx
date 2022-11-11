@@ -29,8 +29,8 @@ export const PhotoDialogs: React.FC = () => {
     const { t } = useTranslation()
     const getData = async () => {
         const res = await getImageUrl()
-        if (res) {
-            setUrl(res.url.map(i => {
+        if (res.data && !res.error) {
+            setUrl(res.data.url.map(i => {
                 return ({
                     id: v4(),
                     url: i,
@@ -58,7 +58,7 @@ export const PhotoDialogs: React.FC = () => {
             return
         }
         const uploadRes = await uploadAvatar(file)
-        if (uploadRes.data) {
+        if (uploadRes.data && !uploadRes.error) {
             setUrl(prevState => {
                 const newPhoto: AvatarModel = {
                     id: v4(),

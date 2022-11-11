@@ -86,7 +86,7 @@ export const SignIn: React.FC = () => {
             password: dataRegisterForm.password
         })
         setBlockedForm(false)
-        if (!data) {
+        if (data.error) {
             setNotAcsessServer(true)
         }
     }

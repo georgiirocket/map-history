@@ -20,31 +20,16 @@ router.post("/", async (req, res) => {
     try {
         let body: ReqData = req.body
         if (!body.login || !body.password) {
-            res.json(<Res<null>>{
-                status: 0,
-                data: null,
-                error: "not access"
-            })
-            return
+            throw new Error("not access")
         }
         let pre = await db.users_model.findOne({ login: body.login })
         if (!pre) {
-            res.json(<Res<null>>{
-                status: 0,
-                data: null,
-                error: "not access"
-            })
-            return
+            throw new Error("not access")
         }
         const isMatchPassword = await BCrypt.compare(body.password, pre.password)
 
         if (!isMatchPassword) {
-            res.json(<Res<null>>{
-                status: 0,
-                data: null,
-                error: "not access"
-            })
-            return
+            throw new Error("not access")
         }
         const { accessToken, refreshToken } = createToken(pre._id)
         setCoockieToken(req, res, accessToken)

@@ -76,13 +76,13 @@ export const Register: React.FC<R_props> = ({ owner = false }) => {
     }
     const chechNikn = async (p: string) => {
         let data = await checkNickname(p)
-        if ((data && data.created) || p.length < 6 || p.length > 20) {
+        if ((data.data && data.data.created) || p.length < 6 || p.length > 20) {
             setNotAccsessValidData(prevState => ({ ...prevState, nickname: true }))
         }
     }
     const chechLogin = async (p: string) => {
         let data = await checkLogin(p)
-        if ((data && data.created) || p.length < 6 || p.length > 20) {
+        if ((data.data && data.data.created) || p.length < 6 || p.length > 20) {
             setNotAccsessValidData(prevState => ({ ...prevState, login: true }))
         }
     }

@@ -10,16 +10,20 @@ interface ConfigRefreshToken {
 }
 let notAuthOut: boolean = false
 const instance = axios.create({});
+const excludeRoute = [
+    config.apiConfig.checkAccessToken
+]
+
 instance.interceptors.response.use(
     (response) => {
         return response;
     },
     async (error) => {
         if (error.response) {
-            if (error.response.status === 401 && notAuthOut) {
+            if (error.response.status === 401 && notAuthOut && !excludeRoute.includes(error.config.url)) {
                 toast.error("Not auth. Please, reload website", { autoClose: 2000 })
             }
-            if (error.response.status === 401 && !notAuthOut) {
+            if (error.response.status === 401 && !notAuthOut && !excludeRoute.includes(error.config.url)) {
                 notAuthOut = true
                 let res = await instance.request<ConfigRefreshToken>({
                     url: config.apiConfig.rehreshToken,
@@ -31,13 +35,10 @@ instance.interceptors.response.use(
                 if (res.statusText === "OK") {
                     notAuthOut = false
                 }
-                console.log(res)
                 return res.statusText === "OK" ? instance(error.config) : error.response
             }
-
             return error.response
         }
-
         return Promise.reject(error);
     }
 );

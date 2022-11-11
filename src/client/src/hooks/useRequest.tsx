@@ -33,15 +33,15 @@ interface Res<T> {
 }
 
 export interface RequestType {
-    checkNickname: (p: string) => Promise<null | ResponseCheckNickname>
-    checkLogin: (p: string) => Promise<null | ResponseCheckLogin>
-    register: (d: RequestDataRegister) => Promise<null | ResponseDataRegister>
-    checkTokenStartApp: () => Promise<null | ResponseDataRegister>
-    exit: () => Promise<null>
-    signIn: (x: ReqDataSignIn) => Promise<null | ResponseDataRegister>
+    checkNickname: (p: string) => Promise<Res<null> | Res<ResponseCheckNickname>>
+    checkLogin: (p: string) => Promise<Res<null> | Res<ResponseCheckLogin>>
+    register: (d: RequestDataRegister) => Promise<Res<null> | Res<ResponseDataRegister>>
+    checkTokenStartApp: () => void
+    exit: () => void
+    signIn: (x: ReqDataSignIn) => Promise<Res<null> | Res<ResponseDataRegister>>
     checkReadyApp: () => void
     uploadAvatar: (f: File) => Promise<Res<null> | Res<string>>
-    getImageUrl: () => Promise<null | ResponseGetImageUrl>
+    getImageUrl: () => Promise<Res<null> | Res<ResponseGetImageUrl>>
     changeActiveAvatar: (a: string) => Promise<Res<null> | Res<ChangeActiveAvatar>>
     removeAvatar: (a: string) => Promise<Res<null> | Res<ResRemoveAvatar>>
     getProfileInfo: () => Promise<Res<null> | Res<ResGetProfileInfo>>
@@ -66,106 +66,148 @@ export const useRequest = () => {
 
     const request: RequestType = {
         checkNickname: async (p: string) => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
             setLoadCheckNickname(true)
-            let res = await fetchJson<Res<ResponseCheckNickname>>({
-                url: config.apiConfig.checkNickname + p,
-                method: "GET"
+            let res = await axios.request({
+                method: "get",
+                url: config.apiConfig.checkNickname + p
             })
             setLoadCheckNickname(false)
-            if (res.data) {
-                return res.data.data
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
             }
-            return null
+            if (res.statusText === "OK") {
+                let d: Res<ResponseCheckNickname> = res.data
+                return d
+            }
+            return a
         },
         checkLogin: async (p: string) => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
             setLoadCheckLogin(true)
-            let res = await fetchJson<Res<ResponseCheckLogin>>({
+            let res = await axios.request({
+                method: "get",
                 url: config.apiConfig.checkLogin + p,
-                method: "GET"
             })
             setLoadCheckLogin(false)
-            if (res.data) {
-                return res.data.data
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
             }
-            return null
+            if (res.statusText === "OK") {
+                let d: Res<ResponseCheckLogin> = res.data
+                return d
+            }
+            return a
         },
-        register: async (d: RequestDataRegister) => {
+        register: async (data: RequestDataRegister) => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
             setLoadRegister(true)
-            let res = await fetchJson<Res<ResponseDataRegister>>({
+            let res = await axios.request({
+                method: "post",
                 url: config.apiConfig.register,
-                method: "POST",
-                data: d
+                data: data
             })
             setLoadRegister(false)
-            if (res.data && res.data.status) {
-                SR.set(res.data.data.refresh_token)
-                setUserData(res.data.data.userData)
+            if (res.statusText === "OK") {
+                let d: Res<ResponseDataRegister> = res.data
+                SR.set(d.data.refresh_token)
+                setUserData(d.data.userData)
                 setIsAuth(true)
                 setReadyApp(true)
                 navigate(config.routes.map)
-                return res.data.data
+                return d
             }
-            return null
+            return a
         },
         checkTokenStartApp: async () => {
             setLoadCheckToken(true)
-            let res = await fetchJson<Res<ResponseDataRegister>>({
-                url: config.apiConfig.checkAccessToken,
-                method: "GET"
+            let res = await axios.request({
+                method: "get",
+                url: config.apiConfig.checkAccessToken
             })
             setLoadCheckToken(false)
-            if (res.resStatus === 401) {
-                return null
-            }
-            if (res.data && res.data.status) {
-                SR.set(res.data.data.refresh_token)
-                setUserData(res.data.data.userData)
+            if (res.statusText === "OK") {
+                let d: Res<ResponseDataRegister> = res.data
+                SR.set(d.data.refresh_token)
+                setUserData(d.data.userData)
                 setIsAuth(true)
-                return res.data.data
             }
-            return null
         },
         exit: async () => {
             setLoadExit(true)
-            let res = await reqAuth<Res<null>>({
-                url: config.apiConfig.exit,
-                method: "GET"
+            let res = await axios.request({
+                method: "get",
+                url: config.apiConfig.exit
             })
             setLoadExit(false)
-            if (res.resOk) {
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+            }
+            if (res.statusText === "OK") {
                 SR.set("")
                 setUserData(null)
                 setIsAuth(false)
+                navigate(config.routes.map)
             }
-            return null
         },
         signIn: async (x: ReqDataSignIn) => {
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
+            }
             setLoadSignIn(true)
-            let res = await fetchJson<Res<ResponseDataRegister>>({
+            let res = await axios.request({
+                method: "post",
                 url: config.apiConfig.login,
-                method: "POST",
                 data: x
             })
             setLoadSignIn(false)
-            if (res.data && res.data.status) {
-                SR.set(res.data.data.refresh_token)
-                setUserData(res.data.data.userData)
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
+            }
+            if (res.statusText === "OK") {
+                let d: Res<ResponseDataRegister> = res.data
+                SR.set(d.data.refresh_token)
+                setUserData(d.data.userData)
                 setIsAuth(true)
                 navigate(config.routes.map)
-                return res.data.data
+                return d
             }
-            return null
+            return a
         },
         checkReadyApp: async () => {
-            let res = await fetchJson<Res<ResponseDataReadyApp>>({
-                url: config.apiConfig.checkReadyApp,
-                method: "GET",
+            let res = await axios.request({
+                method: "get",
+                url: config.apiConfig.checkReadyApp
             })
-            if (res.resStatus !== 200) {
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
                 return
             }
-            if (res.data && !res.data.data.ready) {
-                setReadyApp(false)
+            if (res.statusText === "OK") {
+                let d: Res<ResponseDataReadyApp> = res.data
+                setReadyApp(d.data.ready)
             }
         },
         uploadAvatar: async (f: File) => {
@@ -174,39 +216,47 @@ export const useRequest = () => {
                 data: null,
                 error: null
             }
-            try {
-                let data = new FormData()
-                data.append('file', f)
-                let res = await fetch(config.apiConfig.uploadAvatar, {
-                    method: 'POST',
-                    body: data
-                })
-                if (res.status === 401) {
-                    updateAuth()
-                    toast.error("Not auth", { autoClose: 2000 })
-                    return a
-                }
-                if (!res.ok) {
-                    let resError = await res.json() as Res<null>
-                    return resError
-                }
-                let resData = await res.json() as Res<string>
-                return resData
-            } catch (err: any) {
-                console.error(err)
-                a.error = err.toString()
-                return a
+            let data = new FormData()
+            data.append('file', f)
+            let res = await axios.request({
+                method: "post",
+                url: config.apiConfig.uploadAvatar,
+                headers: {
+                    "content-type": 'multipart/form-data'
+                },
+                data: data
+            })
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
             }
+            if (res.statusText === "OK") {
+                let d: Res<string> = res.data
+                return d
+            }
+            return a
         },
         getImageUrl: async () => {
-            let res = await reqAuth<Res<ResponseGetImageUrl>>({
-                url: config.apiConfig.getImageUrl,
-                method: "GET"
-            })
-            if (res.data) {
-                return res.data.data
+            const a: Res<null> = {
+                status: 0,
+                data: null,
+                error: null
             }
-            return null
+            let res = await axios.request({
+                method: "get",
+                url: config.apiConfig.getImageUrl
+            })
+            if (res.status === 500) {
+                let d: Res<null> = res.data
+                toast.error(d.error, { autoClose: 2000 })
+                return d
+            }
+            if (res.statusText === "OK") {
+                let d: Res<ResponseGetImageUrl> = res.data
+                return d
+            }
+            return a
         },
         changeActiveAvatar: async (active = "") => {
             const a: Res<null> = {
@@ -311,101 +361,6 @@ export const useRequest = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return request
-}
-
-async function fetchJson<T>(c: TypeConfig) {
-    type optionsType = {
-        method: string,
-        headers: any,
-        body?: string
-    }
-    type answerType = {
-        resOk: boolean,
-        resStatus: number,
-        resTypeConfig: TypeConfig,
-        error: string
-        data: T
-    }
-    type answerTypeError = {
-        resOk: boolean,
-        resStatus: number,
-        resTypeConfig: TypeConfig,
-        error: string
-        data: null
-    }
-    const options: optionsType = {
-        method: c.method,
-        headers: new Headers({ 'content-type': 'application/json' }),
-    }
-    if (c.data) {
-        options.body = JSON.stringify(c.data);
-    }
-    try {
-        let res = await fetch(c.url, options)
-        if (!res.ok) {
-            let d = await res.json()
-            let answ: answerTypeError = {
-                resOk: false,
-                resStatus: res.status,
-                resTypeConfig: c,
-                error: JSON.stringify(d),
-                data: null
-            }
-            return answ
-        }
-        let d = await res.json()
-        let answ: answerType = {
-            resOk: res.ok,
-            resStatus: res.status,
-            resTypeConfig: c,
-            error: "",
-            data: d
-        }
-        return answ
-
-    } catch (err: any) {
-        console.error("fetch_json fail:", err)
-        let answ: answerTypeError = {
-            resOk: false,
-            resStatus: 400,
-            resTypeConfig: c,
-            error: err.toString(),
-            data: null
-        }
-        return answ
-    }
-}
-async function reqAuth<T>(c: TypeConfig) {
-    let originalConfig = c
-    let res = await fetchJson<T>(originalConfig)
-    if (res.resStatus !== 401) {
-        return res
-    }
-    let resRefreshToken = await fetchJson({
-        url: config.apiConfig.rehreshToken,
-        method: "POST",
-        data: {
-            refresh_token: SR.get()
-        }
-    })
-    if (!resRefreshToken.resOk) {
-        window.location.reload()
-        return res
-    }
-    res = await fetchJson<T>(originalConfig)
-    return res
-}
-async function updateAuth() {
-    let resRefreshToken = await fetchJson({
-        url: config.apiConfig.rehreshToken,
-        method: "POST",
-        data: {
-            refresh_token: SR.get()
-        }
-    })
-    if (!resRefreshToken.resOk) {
-        window.location.reload()
-    }
 }
 
 
