@@ -36,3 +36,14 @@ export interface FileInfo {
     uploadDate?: Date;
     contentType?: string;
 }
+
+export interface NewUserData {
+    nickname: string,
+    login: string,
+    password: string
+    owner: boolean
+}
+export interface LogsData {
+    message: string,
+    error: any
+}

@@ -1,7 +1,7 @@
 import { Router, Request } from 'express'
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { db } from '../db/db'
+import { user_controller } from '../db/db'
 const router = Router()
 
 interface AnswerResponse {
@@ -15,10 +15,7 @@ interface ReqQueryActiveImage {
 }
 router.get("/", async (req, res) => {
     try {
-        let user = await db.users_model.findById(req.userId)
-        if (!user) {
-            throw new Error("not found user")
-        }
+        let user = await user_controller.findUserById(req.userId)
         let answer: Res<AnswerResponse> = {
             status: 1,
             error: null,
@@ -47,10 +44,7 @@ router.get("/active", async (req: Request<{}, {}, {}, ReqQueryActiveImage>, res)
         if (!hasActiveProperty) {
             throw new Error(`not found field "active"`)
         }
-        let user = await db.users_model.findById(req.userId)
-        if (!user) {
-            throw new Error("not found user")
-        }
+        let user = await user_controller.findUserById(req.userId)
         if (!user.images.includes(query.active) && query.active) {
             throw new Error("not found picture id in user")
         }

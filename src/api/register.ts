@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import BCrypt from "bcrypt"
 import { logs } from '../handlers/logs'
-import { Res } from '../interface/def_if'
+import { Res, NewUserData } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData, createToken } from '../handlers/middleware'
-import { db } from '../db/db'
+import { db, user_controller } from '../db/db'
 
 const router = Router()
 
@@ -21,7 +21,7 @@ interface AnswRes {
 router.post("/", async (req, res) => {
     try {
         let body: ReqData = req.body
-        let checknickname = await db.users_model.findOne({ nickname: body.nickName })
+        let checknickname = await user_controller.checkNickname(body.nickName)
         if (checknickname) {
             res.json(<Res<null>>{
                 status: 0,
@@ -40,13 +40,12 @@ router.post("/", async (req, res) => {
         }
         const hashPass = await BCrypt.hash(body.password, 12)
 
-        const newUser = new db.users_model({
+        const newUser = await user_controller.createUser({
             nickname: body.nickName,
             login: body.login,
             password: hashPass,
-            role: body.owner ? ["owner", "admin", "user"] : ["user"]
+            owner: body.owner
         })
-        await newUser.save()
         const { accessToken, refreshToken } = createToken(newUser._id)
         setCoockieToken(req, res, accessToken)
         res.json(<Res<AnswRes>>{

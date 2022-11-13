@@ -1,11 +1,11 @@
-import { Schema, Types } from 'mongoose'
-export interface ILogs {
+import { Schema, Types, Document } from 'mongoose'
+export interface ILogs extends Document {
     _id: Types.ObjectId
     message: string
     error: string
     dateCreate: Date
 }
-export interface IEvent {
+export interface IEvent extends Document {
     _id: Types.ObjectId
     nameEvent: string
     message: string

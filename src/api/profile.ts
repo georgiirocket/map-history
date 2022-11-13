@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { db } from '../db/db'
+import { user_controller } from '../db/db'
 import BCrypt from "bcrypt"
 const router = Router()
 
@@ -27,10 +27,7 @@ router.get("/info", async (req, res) => {
         }
     }
     try {
-        const user = await db.users_model.findById(req.userId)
-        if (!user) {
-            throw new Error("not found user")
-        }
+        const user = await user_controller.findUserById(req.userId)
         answer.data.login = user.login
         answer.data.nickname = user.nickname
         res.json(answer)
@@ -59,10 +56,7 @@ router.put("/edit", async (req, res) => {
     }
     try {
         const bodyData: RequestDataEdit = req.body
-        const user = await db.users_model.findById(req.userId)
-        if (!user) {
-            throw new Error("not found user")
-        }
+        const user = await user_controller.findUserById(req.userId)
         if (bodyData.nickname && (bodyData.nickname.length < 6 || bodyData.nickname.length > 20)) {
             throw new Error("This nickname has wrong lenght")
         }
@@ -78,20 +72,14 @@ router.put("/edit", async (req, res) => {
             return res.json(answer)
         }
         if (bodyData.nickname) {
-            const checkNickname = await db.users_model.findOne({
-                nickname: bodyData.nickname,
-                _id: { $ne: req.userId }
-            })
+            const checkNickname = await user_controller.checkNicknameWithoutId(bodyData.nickname, req.userId)
             if (checkNickname) {
                 throw new Error("This nickname exists")
             }
         }
         if (bodyData.login) {
-            const checkNickname = await db.users_model.findOne({
-                login: bodyData.login,
-                _id: { $ne: req.userId }
-            })
-            if (checkNickname) {
+            const checkLogin = await user_controller.checkLoginWithoutId(bodyData.login, req.userId)
+            if (checkLogin) {
                 throw new Error("Create another login")
             }
         }

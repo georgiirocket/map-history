@@ -3,7 +3,7 @@ import BCrypt from "bcrypt"
 import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData, createToken } from '../handlers/middleware'
-import { db } from '../db/db'
+import { user_controller } from '../db/db'
 
 const router = Router()
 
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
         if (!body.login || !body.password) {
             throw new Error("not access")
         }
-        let pre = await db.users_model.findOne({ login: body.login })
+        let pre = await user_controller.checkLogin(body.login)
         if (!pre) {
             throw new Error("not access")
         }

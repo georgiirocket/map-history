@@ -1,5 +1,5 @@
-import { Schema, Types } from 'mongoose'
-export interface IUser {
+import { Schema, Types, Document } from 'mongoose'
+export interface IUser extends Document {
     _id: Types.ObjectId
     nickname: string
     avatar: boolean

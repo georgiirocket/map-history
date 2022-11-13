@@ -5,7 +5,7 @@ import { deleteCockie } from '../handlers/middleware'
 
 const router = Router()
 
-router.get("/", async (req, res) => {
+router.get("/", async (_, res) => {
     try {
         deleteCockie(res)
         res.json(<Res<null>>{
