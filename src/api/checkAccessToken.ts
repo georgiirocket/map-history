@@ -1,8 +1,7 @@
 import { Router } from 'express'
-import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData, createToken } from '../handlers/middleware'
-import { db, user_controller } from '../db/db'
+import { user_controller, logsEvent_controller } from '../db/db'
 
 const router = Router()
 
@@ -32,7 +31,7 @@ router.get("/", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Check access token route fail",
             error: err ? err.toString() : ""
         })

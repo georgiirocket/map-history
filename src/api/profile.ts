@@ -1,7 +1,6 @@
 import { Router } from 'express'
-import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { user_controller } from '../db/db'
+import { user_controller, logsEvent_controller } from '../db/db'
 import BCrypt from "bcrypt"
 const router = Router()
 
@@ -38,7 +37,7 @@ router.get("/info", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).send(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Change data profile route fail",
             error: err ? err.toString() : ""
         })
@@ -104,7 +103,7 @@ router.put("/edit", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Change data profile route fail",
             error: err ? err.toString() : ""
         })

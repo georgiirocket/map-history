@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { deleteCockie } from '../handlers/middleware'
+import { logsEvent_controller } from "../db/db"
 
 const router = Router()
 
@@ -20,7 +20,7 @@ router.get("/", async (_, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Exit route fail",
             error: err ? err.toString() : ""
         })

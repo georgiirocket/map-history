@@ -1,8 +1,7 @@
 import { Router } from 'express'
 import mongoose from 'mongoose';
-import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { user_controller, db } from '../db/db'
+import { user_controller, logsEvent_controller, db } from '../db/db'
 import { upload } from "../handlers/gridFSStorage"
 const router = Router()
 
@@ -37,7 +36,7 @@ router.post('/avatar/upload', upload.single('file'), async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Get avatar route fail",
             error: err ? err.toString() : ""
         })
@@ -73,7 +72,7 @@ router.get("/getavatar/:id", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Get avatar route fail",
             error: err ? err.toString() : ""
         })
@@ -104,7 +103,7 @@ router.delete("/getavatar/:id", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Remove avatar route fail",
             error: err ? err.toString() : ""
         })

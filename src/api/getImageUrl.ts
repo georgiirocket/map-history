@@ -1,7 +1,6 @@
 import { Router, Request } from 'express'
-import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
-import { user_controller } from '../db/db'
+import { user_controller, logsEvent_controller } from '../db/db'
 const router = Router()
 
 interface AnswerResponse {
@@ -31,7 +30,7 @@ router.get("/", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Check nickName route fail",
             error: err ? err.toString() : ""
         })
@@ -70,7 +69,7 @@ router.get("/active", async (req: Request<{}, {}, {}, ReqQueryActiveImage>, res)
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Active photo route fail",
             error: err ? err.toString() : ""
         })

@@ -1,9 +1,8 @@
 import { Router } from 'express'
 import BCrypt from "bcrypt"
-import { logs } from '../handlers/logs'
-import { Res, NewUserData } from '../interface/def_if'
+import { Res } from '../interface/def_if'
 import { AuthData, setCoockieToken, userData, createToken } from '../handlers/middleware'
-import { db, user_controller } from '../db/db'
+import { logsEvent_controller, user_controller } from '../db/db'
 
 const router = Router()
 
@@ -64,7 +63,7 @@ router.post("/", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Register route fail",
             error: err ? err.toString() : ""
         })

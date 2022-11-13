@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import jwt from "jsonwebtoken"
-import { logs } from '../handlers/logs'
 import { Res } from '../interface/def_if'
 import { setCoockieToken, createToken } from '../handlers/middleware'
+import { logsEvent_controller } from "../db/db"
 
 const router = Router()
 const JWTSK: string = process.env.SECRET_KEY || "111222333"
@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
             error: err ? err.toString() : ""
         }
         res.status(500).json(answer)
-        logs({
+        logsEvent_controller.logs({
             message: "Refresh token route fail",
             error: err ? err.toString() : ""
         })
