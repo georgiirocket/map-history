@@ -1,11 +1,10 @@
 import multer from 'multer'
 import { GridFsStorage } from "multer-gridfs-storage"
 import { FileInfo } from "../interface/def_if"
-
-const URL: string = process.env.MONGO_URL || ""
+import { db } from '../db/db'
 
 const storage = new GridFsStorage({
-    url: URL,
+    db: db._mapDB,
     file: (req, file) => {
         return new Promise((resolve, reject) => {
             const filename = file.originalname;

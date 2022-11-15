@@ -4,6 +4,8 @@ import { IUser, users } from "../../schema/user"
 import Grid from "gridfs-stream"
 
 const URL: string = process.env.MONGO_URL || ""
+const MONGO_USER: string = process.env.MONGO_USER || ""
+const MONGO_PASSWORD: string = process.env.MONGO_PASSWORD || ""
 
 export class db_connect {
     readonly _mapDB: mongoose.Connection
@@ -13,7 +15,15 @@ export class db_connect {
     logs_model: mongoose.Model<ILogs>
     event_model: mongoose.Model<IEvent>
     constructor() {
-        this._mapDB = mongoose.createConnection(URL)
+        this._mapDB = mongoose.createConnection(URL, {
+            directConnection: true,
+            retryWrites: true,
+            w: "majority",
+            auth: {
+                username: MONGO_USER,
+                password: MONGO_PASSWORD
+            },
+        })
         this.#gfs = {} as Grid.Grid
         this.#gridfsBucket = null
         this.users_model = this._mapDB.model<IUser>("users", users)

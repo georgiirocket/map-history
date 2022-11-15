@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 import express, { Application } from 'express';
 import { json, urlencoded } from "body-parser"
+import path from "path"
 import cors from "cors"
 import ServerHTTP from "http"
 import { create_socket_server } from './api/socketRoutes/s_server';
@@ -43,6 +44,11 @@ app.use("/api/exit", auth, exitRoute)
 app.use("/api/check-accesstoken", auth, checkAccessTokenRoute)
 app.use("/api/check-refreshtoken", refreshTokenRoute)
 app.use("/api/profile", auth, profileRoute)
+
+app.use(express.static(path.join(__dirname, './build')))
+app.get("*", (_, res) => {
+    res.sendFile(path.join(__dirname, './build/index.html'))
+})
 
 async function start() {
     try {

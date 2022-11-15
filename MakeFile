@@ -1,4 +1,8 @@
 compile:
-	cp package.json ./dist && cp -R ./src/client/build ./dist && cp -R ./config ./dist && tsc
+	cd src/client && npm run build && cd ../../  && cp package.json ./dist && cp -R ./src/client/build ./dist && cp -R ./config ./dist && tsc
 dev:
 	concurrently "npm start" "cd src/client && npm start"
+
+
+
+

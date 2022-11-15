@@ -23,7 +23,5 @@ export const SocketProvider: React.FC<Props> = ({ children }) => {
         };
 
     }, []);
-
-
     return (<>{children}</>)
 }
