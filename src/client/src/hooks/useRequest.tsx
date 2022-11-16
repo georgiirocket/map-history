@@ -19,12 +19,7 @@ import {
     ReqUpdateDataProfile
 } from '../models/def_model'
 import axios from "../axios/interceptors"
-
-interface TypeConfig {
-    url: string
-    method: "GET" | "POST" | "PATCH" | "PUT" | "DELETE"
-    data?: any
-}
+import { AxiosRequestConfig } from "axios"
 
 interface Res<T> {
     status: 0 | 1,
@@ -40,7 +35,7 @@ export interface RequestType {
     exit: () => void
     signIn: (x: ReqDataSignIn) => Promise<Res<null> | Res<ResponseDataRegister>>
     checkReadyApp: () => void
-    uploadAvatar: (f: File) => Promise<Res<null> | Res<string>>
+    uploadAvatar: (f: File, c: AxiosRequestConfig) => Promise<Res<null> | Res<string>>
     getImageUrl: () => Promise<Res<null> | Res<ResponseGetImageUrl>>
     changeActiveAvatar: (a: string) => Promise<Res<null> | Res<ChangeActiveAvatar>>
     removeAvatar: (a: string) => Promise<Res<null> | Res<ResRemoveAvatar>>
@@ -210,7 +205,7 @@ export const useRequest = () => {
                 setReadyApp(d.data.ready)
             }
         },
-        uploadAvatar: async (f: File) => {
+        uploadAvatar: async (f: File, configReq) => {
             const a: Res<null> = {
                 status: 0,
                 data: null,
@@ -219,12 +214,14 @@ export const useRequest = () => {
             let data = new FormData()
             data.append('file', f)
             let res = await axios.request({
-                method: "post",
-                url: config.apiConfig.uploadAvatar,
-                headers: {
-                    "content-type": 'multipart/form-data'
-                },
-                data: data
+                ...configReq, ...{
+                    method: "post",
+                    url: config.apiConfig.uploadAvatar,
+                    headers: {
+                        "content-type": 'multipart/form-data'
+                    },
+                    data: data
+                }
             })
             if (res.status === 500) {
                 let d: Res<null> = res.data

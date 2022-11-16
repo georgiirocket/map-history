@@ -1,4 +1,5 @@
 import { AuthData } from './authdata'
+
 export interface ResponseCheckNickname {
     nickName: string
     created: boolean

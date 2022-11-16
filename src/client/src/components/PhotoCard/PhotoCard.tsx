@@ -18,6 +18,7 @@ import '../../sass/_photo_card.scss'
 
 interface LogMenu {
     active: boolean,
+    disabledMenu?: boolean,
     remove: () => void,
     use: () => void
     unUse: () => void
@@ -28,7 +29,7 @@ interface PropsPhotoCard extends LogMenu {
     src: string
 }
 
-export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, remove, use, unUse }) => {
+export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, disabledMenu = false, remove, use, unUse }) => {
     const [loaded, setLoaded] = useState<boolean>(true)
     const [loadedError, setLoadedError] = useState<boolean>(false)
     const { t } = useTranslation()
@@ -59,13 +60,13 @@ export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, remove, use, 
                         {active ? t("photoCard.isUse") : t("photoCard.notUse")}
                     </Typography>
                 </div>
-                <LongMenu remove={remove} use={use} active={active} unUse={unUse} />
+                <LongMenu disabledMenu={disabledMenu} remove={remove} use={use} active={active} unUse={unUse} />
             </CardContent>
         </Card>
     );
 }
 
-function LongMenu({ remove, use, unUse, active }: LogMenu) {
+function LongMenu({ remove, use, unUse, active, disabledMenu }: LogMenu) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const { t } = useTranslation()
@@ -113,7 +114,7 @@ function LongMenu({ remove, use, unUse, active }: LogMenu) {
             >
                 {options.filter(o => active ? o[1] !== 'u' : o[1] !== 'un').map((option) => {
                     return (
-                        <MenuItem key={option[0]} onClick={() => handleClose(option[1])}>
+                        <MenuItem disabled={disabledMenu} key={option[0]} onClick={() => handleClose(option[1])}>
                             {option[0]}
                         </MenuItem>
                     )

@@ -8,7 +8,7 @@
         height: 100%;
         display: grid;
         grid-template-columns: 100%;
-        grid-template-rows: 49px calc(100% - 103px) 54px;
+        grid-template-rows: 49px 25px calc(100% - 128px) 54px;
 
         .custom-title {
             border-bottom: 1px solid $light-line-color;
@@ -17,6 +17,10 @@
             [data-theme-html="dark"] & {
                 border-bottom: 1px solid $dark-line-color;
             }
+        }
+
+        .progress-avatar-container {
+            transition: opacity .2s ease;
         }
 
         .center-photo-box {

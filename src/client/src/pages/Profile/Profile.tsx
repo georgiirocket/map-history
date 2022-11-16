@@ -40,7 +40,6 @@ export const Profile: React.FC = () => {
     const { setLanguage, setProfilePhoto, setScrollMemoryProfile } = useActions()
     const [showPass, setShowPass] = useState<boolean>(false)
     const [autoTheme, setAutoTheme] = useState<boolean>(localStorage.getItem('theme') ? false : true)
-    const [autoLanguage, setAutoLanguage] = useState<boolean>(localStorage.getItem('lang') ? false : true)
     const { t } = useTranslation()
     const { width } = useWindowSize()
     const { ref: refScroll } = useSaveScroll({
@@ -59,14 +58,6 @@ export const Profile: React.FC = () => {
             localStorage.removeItem('theme')
         } else {
             setAutoTheme(e.target.checked)
-        }
-    }
-    const changeAutoLanguage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.checked) {
-            setAutoLanguage(e.target.checked)
-            localStorage.removeItem('lang')
-        } else {
-            setAutoLanguage(e.target.checked)
         }
     }
     const changeLogin = (e: ChangeEvent<HTMLInputElement>) => {
@@ -100,10 +91,6 @@ export const Profile: React.FC = () => {
             setLogin(res.data.login)
         }
     }
-    useEffect(() => {
-        let localLanguage = localStorage.getItem('lang')
-        localLanguage ? setAutoLanguage(false) : setAutoLanguage(true)
-    }, [language])
     useEffect(() => {
         let themeLocal = localStorage.getItem('theme')
         themeLocal ? setAutoTheme(false) : setAutoTheme(true)
@@ -232,14 +219,6 @@ export const Profile: React.FC = () => {
                             {t("profile.autoThemeDescription")}
                         </Typography>
                         <Divider className='div-cust' />
-                        <FormControlLabel label={t("profile.checkBoxLabel.autoLanguage")}
-                            control={<Checkbox onChange={changeAutoLanguage} checked={autoLanguage} />}
-                        />
-                        <Typography
-                            textAlign={width < 576 ? "left" : "center"}
-                            variant="body2" gutterBottom sx={{ m: ".5rem 0" }}>
-                            {t("profile.autoLanguageDescription")}
-                        </Typography>
                         <Button
                             disabled={loadingProfile}
                             onClick={submit}

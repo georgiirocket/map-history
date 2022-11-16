@@ -23,6 +23,7 @@
 
     .left>button,
     .left>div>p,
+    .right>div>button,
     .right>button {
         color: white;
     }
@@ -37,6 +38,18 @@
             height: 24px;
             margin-right: 1rem;
             cursor: pointer;
+        }
+    }
+
+    .right {
+        &::-webkit-scrollbar {
+            width: 0;
+            height: 0
+        }
+
+        @media(max-width: 384px) {
+            width: 120px;
+            overflow: auto;
         }
     }
 

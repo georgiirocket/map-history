@@ -4,9 +4,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import { AxiosRequestConfig } from "axios"
 
 import { PhotoCard } from '../PhotoCard/PhotoCard'
 import { Loading } from '../Loading/Loading';
+import { LinearWithValueLabel } from '../LinearProgressWithLabel/LinearProgressWithLabel';
 
 import { config } from "../../config/default";
 import { useAppSelector, useActions } from '../../hooks/useRedux'
@@ -17,16 +19,19 @@ import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
 import '../../sass/_dialogs_photo.scss'
 
-const sizeLimitFile: number = 10048576
-const possibleTypeFile: string[] = ["image/jpeg", "image/jpg", "image/png"]
+const sizeLimitFile: number = config.sizeLimitAvatarFile
+const possibleTypeFile: string[] = config.typeAvatarFile
 
 export const PhotoDialogs: React.FC = () => {
     const { getImageUrl, uploadAvatar, changeActiveAvatar, removeAvatar } = useContext(RequestContext)
     const [loading, setLoading] = useState<boolean>(true)
+    const [progressUplFile, setProgressUplFile] = useState<number>(0)
     const [url, setUrl] = useState<AvatarModel[]>([])
     const { dialogs, authData } = useAppSelector(state => state.global)
     const { setProfilePhoto, setUrlAvatar } = useActions()
     const { t } = useTranslation()
+    const loadUploadFile = progressUplFile > 0 ? true : false
+
     const getData = async () => {
         const res = await getImageUrl()
         if (res.data && !res.error) {
@@ -40,6 +45,7 @@ export const PhotoDialogs: React.FC = () => {
         }
         setLoading(false)
     }
+
     const changeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || !e.target.files.length) {
             return
@@ -57,7 +63,13 @@ export const PhotoDialogs: React.FC = () => {
             toast(t("fileNotValid.maxPhoto"), { autoClose: 2000 })
             return
         }
-        const uploadRes = await uploadAvatar(file)
+        const configReq: AxiosRequestConfig = {
+            onUploadProgress({ loaded, total }) {
+                const percentCompleted = (loaded / total) * 100
+                percentCompleted >= 100 ? setProgressUplFile(0) : setProgressUplFile(percentCompleted)
+            }
+        }
+        const uploadRes = await uploadAvatar(file, configReq)
         if (uploadRes.data && !uploadRes.error) {
             setUrl(prevState => {
                 const newPhoto: AvatarModel = {
@@ -125,6 +137,9 @@ export const PhotoDialogs: React.FC = () => {
             fullWidth={true} open={dialogs.profilePhoto}>
             <Loading customClass="dpp-content" active={loading}>
                 <DialogTitle className='custom-title' textAlign="center">{t("profile.addPhotoTitle")}</DialogTitle>
+                <div style={{ opacity: progressUplFile ? 1 : 0 }} className='progress-avatar-container'>
+                    <LinearWithValueLabel value={progressUplFile} />
+                </div>
                 <TransitionGroup className="center-photo-box">
                     {url.map((u) => (
                         <CSSTransition
@@ -133,6 +148,7 @@ export const PhotoDialogs: React.FC = () => {
                             classNames="avatar"
                         >
                             <PhotoCard
+                                disabledMenu={loadUploadFile}
                                 src={config.apiConfig.getImage + u.url}
                                 active={u.active}
                                 unUse={() => tougleUsePhoto("")}
@@ -141,12 +157,10 @@ export const PhotoDialogs: React.FC = () => {
                             />
                         </CSSTransition>
                     ))}
-
                 </TransitionGroup>
                 <DialogActions className='btn-block'>
-
-                    <Button onClick={() => setProfilePhoto(false)}>{t("profile.btn.close")}</Button>
-                    <Button onClick={trigger}>{t("profile.btn.addPhoto")}</Button>
+                    <Button disabled={loadUploadFile} onClick={() => setProfilePhoto(false)}>{t("profile.btn.close")}</Button>
+                    <Button disabled={loadUploadFile} onClick={trigger}>{t("profile.btn.addPhoto")}</Button>
                 </DialogActions>
                 <input accept={".jpg, .jpeg, .png"} onChange={e => changeFile(e)} className='inp-file' type="file" />
             </Loading>

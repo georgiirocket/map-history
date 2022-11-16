@@ -1,4 +1,6 @@
 export const config = {
+    sizeLimitAvatarFile: 10048576,
+    typeAvatarFile: ["image/jpeg", "image/jpg", "image/png"],
     apiConfig: {
         rehreshToken: "/api/check-refreshtoken",
         checkNickname: "/api/check-nickname/",

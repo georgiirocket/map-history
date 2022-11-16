@@ -21,7 +21,6 @@ export const SocketProvider: React.FC<Props> = ({ children }) => {
             socket.off('connect');
             socket.off('disconnect');
         };
-
     }, []);
     return (<>{children}</>)
 }
