@@ -10,8 +10,7 @@ type Props = {
 export const SocketProvider: React.FC<Props> = ({ children }) => {
     const { isAuth } = useAppSelector(state => state.global)
     useEffect(() => {
-        socket.disconnect()
-        socket.connect()
+        isAuth ? socket.connect() : socket.disconnect()
     }, [isAuth])
     useEffect(() => {
         socket.on("connect_error", (err) => {

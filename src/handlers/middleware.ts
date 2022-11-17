@@ -18,10 +18,11 @@ export interface AuthData {
     settings: string[]
     role: string[]
 }
-
-interface AuthSocket {
+interface AuthSocketAll {
     socket: Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
     next: (err?: Error | undefined) => void
+}
+interface AuthSocket extends AuthSocketAll {
     packet: string
     authRoute?: string[]
 }
@@ -110,5 +111,22 @@ export const authSocket = ({ socket, next, packet, authRoute = [] }: AuthSocket)
     } catch (e) {
         console.log(e)
         socket.emit("updateToken")
+    }
+}
+export const authSocketAll = (socket: Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, next: (err?: Error | undefined) => void): void => {
+    try {
+        let cookies: cookiesType = parse(socket.handshake.headers.cookie || '');
+        if (!cookies.token) {
+            throw new Error("not field token")
+        }
+        const decoded = jwt.verify(cookies.token, JWTSK) as decodedType
+        if (decoded.type !== "access") {
+            throw new Error("fail access token")
+        }
+        socket.data.userId = decoded.userId
+        next()
+    } catch (e: any) {
+        console.log(e)
+        next(e)
     }
 }
