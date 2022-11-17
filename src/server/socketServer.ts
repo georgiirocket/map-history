@@ -2,6 +2,7 @@ import ServerHTTP from "http"
 import { Server as ServerIO } from "socket.io"
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from "../interface/def_if"
 import { authSocketAll } from "../handlers/middleware"
+import { socketStorage } from "../storage/socketStorage"
 
 const corsOrigin = (() => {
     if (process.env.CORS_SOCKET_ORIGIN) {
@@ -20,8 +21,15 @@ export const create_socket_server = (server: ServerHTTP.Server): ServerIO<Client
     })
     io.use(authSocketAll);
     io.on('connection', (socket) => {
+        socketStorage.addSocket({
+            socketId: socket.id,
+            userId: socket.data.userId || ""
+        })
         socket.on("hello", (p) => {
             console.log("hello", p)
+        })
+        socket.on("disconnect", () => {
+            socketStorage.removeSocket(socket.id)
         })
     })
     return io

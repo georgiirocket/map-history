@@ -47,3 +47,7 @@ export interface LogsData {
     message: string,
     error: any
 }
+export interface SocketStorage {
+    socketId: string
+    userId: string
+}

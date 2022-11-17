@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 import { db } from './db/db';
+import { socketStorage } from "./storage/socketStorage"
 import { server } from './server/createServer'
 
 const PORT: number = Number(process.env.SERVER_PORT) || 5000
@@ -9,6 +10,7 @@ const VER: string = process.env.VERSION || "Not version"
 
 async function start() {
     try {
+        socketStorage.init()
         db.mapdb_init()
         server.listen(PORT, () => {
             console.group('Map_history')
