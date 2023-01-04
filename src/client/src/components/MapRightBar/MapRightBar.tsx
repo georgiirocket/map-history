@@ -3,7 +3,6 @@ import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Route, Routes } from 'react-router-dom'
 
 import { useAppSelector, useActions } from "../../hooks/useRedux";
-import { config } from "../../config/default";
 import { DefaultMap } from "../../pages_incuded/DefaultMap/DefaultMap";
 import '../../sass/_maprightbar.scss'
 

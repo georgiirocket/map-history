@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import Button from '@mui/material/Button';
 import { v4 } from 'uuid';
 
 import { useAppSelector, useActions } from "../../hooks/useRedux";
@@ -43,10 +44,10 @@ export const ContentRightBar: React.FC<ContentRightBarProps> = ({ title = 'Name 
                 </div>
             </div>
             <div className="btn-block">
-                {mapRightBar === "right" && <OpenInFullIcon className="resize" onClick={() => setMapRightBar("center")} />}
-                {mapRightBar === "center" && <CloseFullscreenIcon className="resize" onClick={() => setMapRightBar("right")} />}
+                {mapRightBar === "right" && <Button variant="outlined" startIcon={<OpenInFullIcon />} className="resize" onClick={() => setMapRightBar("center")} >Size</Button>}
+                {mapRightBar === "center" && <Button className="resize" variant="outlined" startIcon={<CloseFullscreenIcon />} onClick={() => setMapRightBar("right")} >Size</Button>}
                 {navigates && navigates.length && <AppMenu navigates={navigates} />}
-                <DisabledByDefaultIcon onClick={() => setMapRightBar("hide")} />
+                <Button className="resize" variant="outlined" startIcon={<DisabledByDefaultIcon />} onClick={() => setMapRightBar("hide")} >Close</Button>
             </div>
         </div>
     )
