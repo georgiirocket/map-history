@@ -66,3 +66,8 @@ export interface MapInit {
     addMarkerPosition: null | AddMarkerPositionType
     stopPosition: null | AddMarkerPositionType
 }
+
+export interface TowardsPosition {
+    position: [number, number],
+    zoom: number
+}

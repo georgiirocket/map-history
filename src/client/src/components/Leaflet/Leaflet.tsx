@@ -3,22 +3,36 @@ import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from 'react-leaf
 import Button from '@mui/material/Button';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 
-import { MarkerPosition } from '../../interface/interface_default'
+import { MarkerPosition, TowardsPosition } from '../../interface/interface_default'
 import { useAppSelector, useActions } from "../../hooks/useRedux";
 import { useCustomMarker } from "../../hooks/useCustomMarker";
 import { useTranslation } from "react-i18next";
 import '../../sass/_leaflet.scss'
 
 let privateMap: any | null = null
-let position: [number, number][] = [
-    [51.505, -0.09]
-]
 let timeoutId: null | ReturnType<typeof setTimeout> = null
 export const Leaflet: React.FC = () => {
-    const { myLocalPosition, createMarkerMod, addMarkerPosition } = useAppSelector(state => state.map)
+    const { myLocalPosition, createMarkerMod, addMarkerPosition, stopPosition } = useAppSelector(state => state.map)
     const { setMyLocalPosition, setAddMarker, setStopPosition } = useActions()
     const { customIconMarker } = useCustomMarker()
     const { t } = useTranslation()
+
+    const towardsSavedPosition = ((): TowardsPosition => {
+        if (addMarkerPosition) {
+            return ({
+                position: [addMarkerPosition.latLng.lat, addMarkerPosition.latLng.lng],
+                zoom: addMarkerPosition.zoom
+            })
+        }
+        if (stopPosition) {
+            return ({
+                position: [stopPosition.latLng.lat, stopPosition.latLng.lng],
+                zoom: stopPosition.zoom
+            })
+        }
+        return ({ position: [0, 0], zoom: 4 })
+    })()
+
     const MyComponent = () => {
         const map = useMapEvents({
             click: (e) => {
@@ -75,7 +89,7 @@ export const Leaflet: React.FC = () => {
         <MapContainer
             className="leaflet-custom"
             style={{ height: '100%', width: '100%' }}
-            center={position[0]} zoom={13} scrollWheelZoom={true}>
+            center={towardsSavedPosition.position} zoom={towardsSavedPosition.zoom} scrollWheelZoom={true}>
             <TileLayer
                 attribution='&amp;copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

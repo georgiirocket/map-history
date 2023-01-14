@@ -24,6 +24,7 @@ type ParamsScrollHandler = "left" | "right"
 
 export const MapBar: React.FC = () => {
     const { mapBar, scrollMapBar, createMarkerMod } = useAppSelector(state => state.map)
+    const globalState = useAppSelector(state => state.global)
     const { setMapBar, setScrollMapBar, setCreateMarkerMod } = useActions()
     const { t } = useTranslation()
     const scrollHandler = (par: ParamsScrollHandler) => {
@@ -70,11 +71,14 @@ export const MapBar: React.FC = () => {
                         <Button
                             onClick={getMyLocation}
                             startIcon={<LocationSearchingIcon />}>{t("mapPage.mapBar.btn.myLocation")}</Button>
-                        <Button
-                            style={createMarkerMod ? { color: themeApp.ORANGE_COLOR } : {}}
-                            onClick={() => setCreateMarkerMod(!createMarkerMod)}
-                            startIcon={<AddLocationAltIcon />}>{t("mapPage.mapBar.btn.addMarkerMod")}</Button>
-                        <Button startIcon={<LibraryBooksIcon />}>{t("mapPage.mapBar.btn.myMarkers")}</Button>
+                        {globalState.isAuth ? (
+                            <><Button
+                                style={createMarkerMod ? { color: themeApp.ORANGE_COLOR } : {}}
+                                onClick={() => setCreateMarkerMod(!createMarkerMod)}
+                                startIcon={<AddLocationAltIcon />}>{t("mapPage.mapBar.btn.addMarkerMod")}</Button>
+                                <Button startIcon={<LibraryBooksIcon />}>{t("mapPage.mapBar.btn.myMarkers")}</Button></>
+                        ) : false}
+
                     </div>
                     <ArrowRightIcon onClick={() => scrollHandler("right")} />
                 </div>

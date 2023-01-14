@@ -46,7 +46,7 @@ export const ContentRightBar: React.FC<ContentRightBarProps> = ({ title = 'Name 
             <div className="btn-block">
                 {mapRightBar === "right" && <Button variant="outlined" startIcon={<OpenInFullIcon />} className="resize" onClick={() => setMapRightBar("center")} >Size</Button>}
                 {mapRightBar === "center" && <Button className="resize" variant="outlined" startIcon={<CloseFullscreenIcon />} onClick={() => setMapRightBar("right")} >Size</Button>}
-                {navigates && navigates.length && <AppMenu navigates={navigates} />}
+                {/* {navigates && navigates.length && <AppMenu navigates={navigates} />} */}
                 <Button className="resize" variant="outlined" startIcon={<DisabledByDefaultIcon />} onClick={() => setMapRightBar("hide")} >Close</Button>
             </div>
         </div>
