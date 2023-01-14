@@ -64,7 +64,8 @@ export interface MapInit {
     alertMap: string,
     mapRightBar: MapRightBar,
     addMarkerPosition: null | AddMarkerPositionType
-    stopPosition: null | AddMarkerPositionType
+    stopPosition: null | AddMarkerPositionType,
+    lastlocation: string
 }
 
 export interface TowardsPosition {

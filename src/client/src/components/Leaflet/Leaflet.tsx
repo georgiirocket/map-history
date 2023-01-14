@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from 'react-leaflet'
+import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 
+import { config } from "../../config/default";
 import { MarkerPosition, TowardsPosition } from '../../interface/interface_default'
 import { useAppSelector, useActions } from "../../hooks/useRedux";
 import { useCustomMarker } from "../../hooks/useCustomMarker";
@@ -13,9 +15,11 @@ let privateMap: any | null = null
 let timeoutId: null | ReturnType<typeof setTimeout> = null
 export const Leaflet: React.FC = () => {
     const { myLocalPosition, createMarkerMod, addMarkerPosition, stopPosition } = useAppSelector(state => state.map)
-    const { setMyLocalPosition, setAddMarker, setStopPosition } = useActions()
+    const globalState = useAppSelector((state) => state.global)
+    const { setMyLocalPosition, setAddMarker, setStopPosition, setMapRightBar } = useActions()
     const { customIconMarker } = useCustomMarker()
     const { t } = useTranslation()
+    const navigate = useNavigate()
 
     const towardsSavedPosition = ((): TowardsPosition => {
         if (addMarkerPosition) {
@@ -32,6 +36,14 @@ export const Leaflet: React.FC = () => {
         }
         return ({ position: [0, 0], zoom: 4 })
     })()
+
+    const test = () => {
+        if (privateMap) {
+            privateMap.closePopup()
+        }
+        setMapRightBar("right")
+        navigate(config.routes.marker + "/new")
+    }
 
     const MyComponent = () => {
         const map = useMapEvents({
@@ -108,8 +120,8 @@ export const Leaflet: React.FC = () => {
                 <Marker position={myLocalPosition} icon={customIconMarker.mylocation()}>
                     <Popup className="popup_theme">You are here!!!</Popup>
                 </Marker>) : false}
-            {addMarkerPosition && (<Marker position={addMarkerPosition.latLng} icon={customIconMarker.edit()}>
-                <Popup className="popup_theme"><Button size="small" >{t("mapPage.createMarker")}</Button></Popup>
+            {addMarkerPosition && globalState.isAuth && (<Marker position={addMarkerPosition.latLng} icon={customIconMarker.edit()}>
+                <Popup className="popup_theme"><Button size="small" onClick={test} >{t("mapPage.createMarker")}</Button></Popup>
             </Marker>)}
             {/* {state.clickPosition ? (<Marker position={state.clickPosition} icon={customIconMarker.edit()}>
                     <Popup className="popup_theme">

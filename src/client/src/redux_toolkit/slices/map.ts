@@ -12,7 +12,8 @@ const initialState: MapInit = {
     alertMap: '',
     mapRightBar: "hide",
     addMarkerPosition: null,
-    stopPosition: null
+    stopPosition: null,
+    lastlocation: ""
 };
 
 const mapSlice = createSlice({
@@ -45,6 +46,9 @@ const mapSlice = createSlice({
         },
         setStopPosition: (state, action: PayloadAction<SetAddMarker>) => {
             state.stopPosition = action.payload
+        },
+        setMapLastLocation: (state, action: PayloadAction<string>) => {
+            state.lastlocation = action.payload
         }
     },
 });

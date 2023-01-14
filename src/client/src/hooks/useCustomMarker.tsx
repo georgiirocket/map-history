@@ -3,6 +3,7 @@ import { divIcon } from "leaflet"
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { themeApp } from '../styles/_default';
+import "../sass/_marker.scss"
 
 const DEF_STYLE = {
     width: '100%',
@@ -16,7 +17,7 @@ export const useCustomMarker = () => {
         />
     );
     const iconAddLocation = renderToStaticMarkup(
-        <AddLocationAltIcon style={DEF_STYLE} />
+        <AddLocationAltIcon className='add-marker' style={DEF_STYLE} />
     )
     const customIconMarker = {
         basic: () => {

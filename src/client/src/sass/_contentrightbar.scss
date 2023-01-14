@@ -51,6 +51,11 @@
                 position: relative;
             }
         }
+
+        .c-block {
+            width: 100%;
+            height: calc(100% - 35px);
+        }
     }
 
     .btn-block {

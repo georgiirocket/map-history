@@ -24,7 +24,8 @@ export const config = {
         signIn: '/sign-in',
         about: '/about',
         support: '/support',
-        profile: '/profile'
+        profile: '/profile',
+        marker: '/map/marker'
     },
     languages: [
         ['en', 'English'],

@@ -1,0 +1,5 @@
+@import "./default";
+
+.add-marker {
+    @extend %jumping;
+}

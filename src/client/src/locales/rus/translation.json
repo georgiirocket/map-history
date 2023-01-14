@@ -120,5 +120,9 @@
             "title": "Бар",
             "descriprion": "Этот бар дает возможность создавать свои маркеры и описывать события..."
         }
+    },
+    "markerCreate": {
+        "create": "New marker",
+        "currentMarker": "Marker"
     }
 }
