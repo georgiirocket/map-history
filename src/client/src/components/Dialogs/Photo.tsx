@@ -10,6 +10,7 @@ import { PhotoCard } from '../PhotoCard/PhotoCard'
 import { Loading } from '../Loading/Loading';
 import { LinearWithValueLabel } from '../LinearProgressWithLabel/LinearProgressWithLabel';
 
+import { TypeOptions } from '../../interface/interface_default';
 import { config } from "../../config/default";
 import { useAppSelector, useActions } from '../../hooks/useRedux'
 import { useTranslation } from 'react-i18next';
@@ -141,22 +142,31 @@ export const PhotoDialogs: React.FC = () => {
                     <LinearWithValueLabel value={progressUplFile} />
                 </div>
                 <TransitionGroup className="center-photo-box">
-                    {url.map((u) => (
-                        <CSSTransition
-                            key={u.id}
-                            timeout={300}
-                            classNames="avatar"
-                        >
-                            <PhotoCard
-                                disabledMenu={loadUploadFile}
-                                src={config.apiConfig.getImage + u.url}
-                                active={u.active}
-                                unUse={() => tougleUsePhoto("")}
-                                remove={() => remove(u.url)}
-                                use={() => tougleUsePhoto(u.url)}
-                            />
-                        </CSSTransition>
-                    ))}
+                    {url.map((u) => {
+                        const options: TypeOptions[] = [
+                            [t("photoCard.btn.use"), 'u', () => tougleUsePhoto(u.url)],
+                            [t("photoCard.btn.unUse"), 'un', () => tougleUsePhoto("")],
+                            [t("photoCard.btn.remove"), 'r', () => remove(u.url)]
+                        ]
+                        const sf = (p: TypeOptions[]): TypeOptions[] => {
+                            return u.active ? p.filter(o => o[1] !== 'u') : p.filter(o => o[1] !== 'un')
+                        }
+                        return (
+                            <CSSTransition
+                                key={u.id}
+                                timeout={300}
+                                classNames="avatar"
+                            >
+                                <PhotoCard
+                                    disabledMenu={loadUploadFile}
+                                    src={config.apiConfig.getImage + u.url}
+                                    active={u.active}
+                                    options={options}
+                                    specialFilter={sf}
+                                />
+                            </CSSTransition>
+                        )
+                    })}
                 </TransitionGroup>
                 <DialogActions className='btn-block'>
                     <Button disabled={loadUploadFile} onClick={() => setProfilePhoto(false)}>{t("profile.btn.close")}</Button>

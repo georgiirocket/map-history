@@ -77,9 +77,6 @@ export const Profile: React.FC = () => {
         }
     }
     const submit = async () => {
-        console.log("N", nickname)
-        console.log("L", login)
-        console.log("P", password)
         let res = await updateProfile({ nickname, login, password })
         if (!res.data) {
             return

@@ -72,3 +72,5 @@ export interface TowardsPosition {
     position: [number, number],
     zoom: number
 }
+
+export type TypeOptions = [string, string, () => void]

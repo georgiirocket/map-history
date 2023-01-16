@@ -3,7 +3,6 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ContentRightBar } from "../../components/ContentRightBar/ContentRightBar";
 import Typography from '@mui/material/Typography';
-import Typed from 'react-typed';
 
 import { Loading } from "../../components/Loading/Loading";
 import { config } from "../../config/default";
@@ -33,7 +32,11 @@ export const MarkerInfo: React.FC = () => {
         <ContentRightBar title={id === "new" ? t("markerCreate.create") : t("markerCreate.currentMarker")}>
             <div className="marker-box">
                 <Loading active={loading}>
-                    <div>hello</div>
+                    <div>
+                        <Typography variant="subtitle2" gutterBottom>
+                            Photo
+                        </Typography>
+                    </div>
                 </Loading>
             </div>
         </ContentRightBar>

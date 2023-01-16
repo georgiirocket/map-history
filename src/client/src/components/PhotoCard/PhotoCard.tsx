@@ -11,17 +11,16 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Skeleton from '@mui/material/Skeleton';
 
+import { TypeOptions } from '../../interface/interface_default';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../hooks/useRedux';
 import { themeApp } from '../../styles/_default';
 import '../../sass/_photo_card.scss'
 
 interface LogMenu {
-    active: boolean,
     disabledMenu?: boolean,
-    remove: () => void,
-    use: () => void
-    unUse: () => void
+    options: TypeOptions[],
+    specialFilter?: (p: TypeOptions[]) => TypeOptions[]
 }
 
 interface PropsPhotoCard extends LogMenu {
@@ -29,7 +28,7 @@ interface PropsPhotoCard extends LogMenu {
     src: string
 }
 
-export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, disabledMenu = false, remove, use, unUse }) => {
+export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, disabledMenu = false, options, specialFilter }) => {
     const [loaded, setLoaded] = useState<boolean>(true)
     const [loadedError, setLoadedError] = useState<boolean>(false)
     const { t } = useTranslation()
@@ -60,30 +59,24 @@ export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, disabledMenu 
                         {active ? t("photoCard.isUse") : t("photoCard.notUse")}
                     </Typography>
                 </div>
-                <LongMenu disabledMenu={disabledMenu} remove={remove} use={use} active={active} unUse={unUse} />
+                <LongMenu
+                    disabledMenu={disabledMenu}
+                    options={options}
+                    specialFilter={specialFilter}
+                />
             </CardContent>
         </Card>
     );
 }
 
-function LongMenu({ remove, use, unUse, active, disabledMenu }: LogMenu) {
+function LongMenu({ disabledMenu, options, specialFilter }: LogMenu) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const { t } = useTranslation()
-    const options = [[t("photoCard.btn.use"), 'u'], [t("photoCard.btn.unUse"), 'un'], [t("photoCard.btn.remove"), 'r']];
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = (action: string) => {
-        setAnchorEl(null);
-        if (action === 'r') {
-            remove()
-        } else if (action === 'un') {
-            unUse()
-        } else {
-            use()
-        }
-    };
+
+    const s_filter = specialFilter ? specialFilter : (p: TypeOptions[]): TypeOptions[] => p
 
     return (
         <div>
@@ -112,9 +105,9 @@ function LongMenu({ remove, use, unUse, active, disabledMenu }: LogMenu) {
                     },
                 }}
             >
-                {options.filter(o => active ? o[1] !== 'u' : o[1] !== 'un').map((option) => {
+                {s_filter(options).map((option) => {
                     return (
-                        <MenuItem disabled={disabledMenu} key={option[0]} onClick={() => handleClose(option[1])}>
+                        <MenuItem disabled={disabledMenu} key={option[0]} onClick={() => option[2]()}>
                             {option[0]}
                         </MenuItem>
                     )
