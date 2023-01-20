@@ -1,21 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { RequestContext } from '../../providers/Request';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
 import { AxiosRequestConfig } from "axios"
 
-import { PhotoCard } from '../PhotoCard/PhotoCard'
-import { Loading } from '../Loading/Loading';
-import { LinearWithValueLabel } from '../LinearProgressWithLabel/LinearProgressWithLabel';
+import { PhotoUiDialog } from '../../ui/DialogPhoto/DialogPhoto';
 
-import { TypeOptions } from '../../interface/interface_default';
+import { TypeOptions, PhotoUiDialogData } from '../../interface/interface_default';
 import { config } from "../../config/default";
 import { useAppSelector, useActions } from '../../hooks/useRedux'
 import { useTranslation } from 'react-i18next';
 import { AvatarModel } from '../../models/avatar'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
 import '../../sass/_dialogs_photo.scss'
@@ -31,7 +24,6 @@ export const PhotoDialogs: React.FC = () => {
     const { dialogs, authData } = useAppSelector(state => state.global)
     const { setProfilePhoto, setUrlAvatar } = useActions()
     const { t } = useTranslation()
-    const loadUploadFile = progressUplFile > 0 ? true : false
 
     const getData = async () => {
         const res = await getImageUrl()
@@ -87,12 +79,6 @@ export const PhotoDialogs: React.FC = () => {
         }
         setLoading(false)
     }
-    const trigger = () => {
-        let input: HTMLElement = document.querySelector('.inp-file') as HTMLElement
-        if (input) {
-            input.click()
-        }
-    }
     const tougleUsePhoto = async (a: string) => {
         const res = await changeActiveAvatar(a)
         if (res.error) {
@@ -122,58 +108,33 @@ export const PhotoDialogs: React.FC = () => {
         }
         setUrl(prevState => prevState.filter(i => i.url !== res.data.deleteId))
     }
+    const dataForDialog = (p: AvatarModel[]): PhotoUiDialogData[] => p.map(u => {
+        const options: TypeOptions[] = [
+            [t("photoCard.btn.use"), 'u', () => tougleUsePhoto(u.url)],
+            [t("photoCard.btn.unUse"), 'un', () => tougleUsePhoto("")],
+            [t("photoCard.btn.remove"), 'r', () => remove(u.url)]
+        ]
+        const sf = (p: TypeOptions[]): TypeOptions[] => {
+            return u.active ? p.filter(o => o[1] !== 'u') : p.filter(o => o[1] !== 'un')
+        }
+        return ({ ...u, options, specialFilter: sf, url: config.apiConfig.getImage + u.url })
+    }, [])
+
     useEffect(() => {
         getData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
-        <Dialog
-            PaperProps={{
-                sx: {
-                    minHeight: "calc(100% - 10px)",
-                    minWidth: "calc(100% - 10px)"
-                }
-            }}
-            className="dialog-pp-container"
-            fullWidth={true} open={dialogs.profilePhoto}>
-            <Loading customClass="dpp-content" active={loading}>
-                <DialogTitle className='custom-title' textAlign="center">{t("profile.addPhotoTitle")}</DialogTitle>
-                <div style={{ opacity: progressUplFile ? 1 : 0 }} className='progress-avatar-container'>
-                    <LinearWithValueLabel value={progressUplFile} />
-                </div>
-                <TransitionGroup className="center-photo-box">
-                    {url.map((u) => {
-                        const options: TypeOptions[] = [
-                            [t("photoCard.btn.use"), 'u', () => tougleUsePhoto(u.url)],
-                            [t("photoCard.btn.unUse"), 'un', () => tougleUsePhoto("")],
-                            [t("photoCard.btn.remove"), 'r', () => remove(u.url)]
-                        ]
-                        const sf = (p: TypeOptions[]): TypeOptions[] => {
-                            return u.active ? p.filter(o => o[1] !== 'u') : p.filter(o => o[1] !== 'un')
-                        }
-                        return (
-                            <CSSTransition
-                                key={u.id}
-                                timeout={300}
-                                classNames="avatar"
-                            >
-                                <PhotoCard
-                                    disabledMenu={loadUploadFile}
-                                    src={config.apiConfig.getImage + u.url}
-                                    active={u.active}
-                                    options={options}
-                                    specialFilter={sf}
-                                />
-                            </CSSTransition>
-                        )
-                    })}
-                </TransitionGroup>
-                <DialogActions className='btn-block'>
-                    <Button disabled={loadUploadFile} onClick={() => setProfilePhoto(false)}>{t("profile.btn.close")}</Button>
-                    <Button disabled={loadUploadFile} onClick={trigger}>{t("profile.btn.addPhoto")}</Button>
-                </DialogActions>
-                <input accept={".jpg, .jpeg, .png"} onChange={e => changeFile(e)} className='inp-file' type="file" />
-            </Loading>
-        </Dialog>
+        <PhotoUiDialog
+            open={dialogs.profilePhoto}
+            activeLoading={loading}
+            progressUplFile={progressUplFile}
+            title={t("profile.addPhotoTitle")}
+            closeBtnTitle={t("profile.btn.close")}
+            addBtnTitle={t("profile.btn.addPhoto")}
+            closeHandler={() => setProfilePhoto(false)}
+            data={dataForDialog(url)}
+            changeFile={changeFile}
+        />
     );
 }

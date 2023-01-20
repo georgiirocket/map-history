@@ -1,3 +1,4 @@
+import React from 'react';
 import { AuthData } from '../models/authdata'
 import { Socket } from "socket.io-client";
 
@@ -74,3 +75,25 @@ export interface TowardsPosition {
 }
 
 export type TypeOptions = [string, string, () => void]
+
+export interface PhotoUiDialogData {
+    id: string,
+    url: string,
+    active: boolean,
+    options: TypeOptions[],
+    specialFilter?: (p: TypeOptions[]) => TypeOptions[]
+}
+
+export interface PhotoUiDialogProps {
+    fullWidth?: boolean,
+    open?: boolean,
+    activeLoading: boolean,
+    progressUplFile?: number,
+    title: string,
+    cssTimeout?: number,
+    data: PhotoUiDialogData[],
+    closeHandler: () => void,
+    changeFile: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    closeBtnTitle: string,
+    addBtnTitle: string
+}
