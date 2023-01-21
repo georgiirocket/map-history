@@ -1,4 +1,5 @@
 import React from 'react';
+import CSS from 'csstype';
 import { AuthData } from '../models/authdata'
 import { Socket } from "socket.io-client";
 
@@ -96,4 +97,23 @@ export interface PhotoUiDialogProps {
     changeFile: (e: React.ChangeEvent<HTMLInputElement>) => void,
     closeBtnTitle: string,
     addBtnTitle: string
+}
+
+export interface PicturesWithLoadProps {
+    src: string,
+    styleBox?: CSS.Properties,
+    styleImg?: CSS.Properties,
+    widthPictures?: string,
+    heightPictures?: string,
+    lazyLoading?: "eager" | "lazy",
+    disabled?: boolean
+}
+
+export interface PhotoSliderData {
+    url: string,
+    caption?: string
+}
+
+export interface PhotoSliderProps {
+    slides: PhotoSliderData[]
 }

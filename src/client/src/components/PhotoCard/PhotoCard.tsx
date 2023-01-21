@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Zoom from 'react-medium-image-zoom'
+import React from 'react';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -9,12 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Skeleton from '@mui/material/Skeleton';
 
 import { TypeOptions } from '../../interface/interface_default';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector } from '../../hooks/useRedux';
 import { themeApp } from '../../styles/_default';
+import { PicturesWithLoad } from '../PicturesWithLoad/PicturesWithLoad';
 import '../../sass/_photo_card.scss'
 
 interface LogMenu {
@@ -29,29 +27,10 @@ interface PropsPhotoCard extends LogMenu {
 }
 
 export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, disabledMenu = false, options, specialFilter }) => {
-    const [loaded, setLoaded] = useState<boolean>(true)
-    const [loadedError, setLoadedError] = useState<boolean>(false)
     const { t } = useTranslation()
-    const { theme } = useAppSelector(state => state.global)
     return (
         <Card className='photo-card-container' sx={{ maxWidth: 345 }}>
-            <div className='ph-box'>
-                <Zoom overlayBgColorEnd={theme === 'light' ? themeApp.WHITE_COLOR : themeApp.DARK_BACKGROUND}>
-                    <img
-                        alt="that wanaka tree"
-                        src={src}
-                        onLoad={() => setLoaded(false)}
-                        onError={() => setLoadedError(true)}
-                        width="345"
-                        height="345"
-                    />
-                </Zoom>
-                {loaded || loadedError ? (
-                    <Skeleton className='sckell' variant="rectangular" width="100%" height="100%">
-                        {loadedError ? "Sorry, can't get picture" : ""}
-                    </Skeleton>
-                ) : false}
-            </div>
+            <PicturesWithLoad src={src} styleImg={{ objectFit: "cover" }} />
             <CardContent className='c-content'>
                 <div className='left'>
                     <CheckCircleIcon sx={active ? { color: themeApp.ORANGE_COLOR } : {}} />

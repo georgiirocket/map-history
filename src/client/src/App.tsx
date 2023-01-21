@@ -19,21 +19,22 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import 'react-medium-image-zoom/dist/styles.css'
 import 'react-toastify/dist/ReactToastify.css';
 import 'leaflet/dist/leaflet.css';
+import 'react-medium-image-zoom/dist/styles.css'
 import './sass/_app.scss'
 
 
 function App() {
   const globalState = useSelector((state: RootState) => state.global)
+  const styles = themeCreate(themeApp)
   return (
     <RequestProvider>
       <SocketProvider>
         <ThemeProvider>
           <SubscribeProvider>
             <main
-              style={themeCreate(themeApp)}
+              style={styles}
               data-theme={globalState.theme}
               data-load={loadFlag(globalState.load)}
               data-ready-app={globalState.readyApp}

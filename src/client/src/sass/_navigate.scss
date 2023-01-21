@@ -62,7 +62,6 @@
     opacity: 0;
     transform: translateX(100px);
     transition: all ease 500ms;
-    // transform: scale(0.9);
 }
 
 .navicon-enter-active {
@@ -71,9 +70,6 @@
     transition: opacity 500ms, transform 500ms;
 }
 
-// .navicon-exit {
-//     opacity: 1;
-// }
 
 .navicon-exit-active {
     opacity: 0;

@@ -18,14 +18,16 @@ export const Map: React.FC = () => {
     const location = useLocation()
     const navigate = useNavigate()
     useEffect(() => {
-        if (location.pathname !== config.routes.map) {
+        if (location.pathname !== config.routes.map && location.pathname.includes(config.routes.map)) {
             setMapLastLocation(location.pathname)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname])
     useEffect(() => {
         if (lastlocation) {
             navigate(lastlocation)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <div
