@@ -24,7 +24,8 @@ export const PhotoUiDialog: React.FC<PhotoUiDialogProps> = ({
     closeHandler,
     changeFile,
     cssTimeout = 300,
-    data
+    data,
+    multiple = false
 }) => {
     const loadUploadFile = progressUplFile > 0 ? true : false
     const trigger = () => {
@@ -70,7 +71,7 @@ export const PhotoUiDialog: React.FC<PhotoUiDialogProps> = ({
                     <Button disabled={loadUploadFile} onClick={closeHandler}>{closeBtnTitle}</Button>
                     <Button disabled={loadUploadFile} onClick={trigger}>{addBtnTitle}</Button>
                 </DialogActions>
-                <input accept={".jpg, .jpeg, .png"} onChange={changeFile} className='inp-file' type="file" />
+                <input multiple={multiple} accept={".jpg, .jpeg, .png"} onChange={changeFile} className='inp-file' type="file" />
             </Loading>
         </Dialog>
     );

@@ -96,7 +96,8 @@ export interface PhotoUiDialogProps {
     closeHandler: () => void,
     changeFile: (e: React.ChangeEvent<HTMLInputElement>) => void,
     closeBtnTitle: string,
-    addBtnTitle: string
+    addBtnTitle: string,
+    multiple?: boolean
 }
 
 export interface PicturesWithLoadProps {
