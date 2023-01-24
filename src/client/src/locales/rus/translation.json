@@ -124,5 +124,12 @@
     "markerCreate": {
         "create": "New marker",
         "currentMarker": "Marker"
+    },
+    "activeMarkerRoute": {
+        "photoDialogs": {
+            "active": "Главное фото",
+            "notActive": "Не использовать (Главное)",
+            "remove": "Удалить"
+        }
     }
 }

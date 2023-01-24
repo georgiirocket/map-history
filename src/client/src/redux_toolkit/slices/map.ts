@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { MapInit, MarkerPosition, MapRightBar, AddMarkerPositionType } from '../../interface/interface_default'
+import {
+    MapInit,
+    MarkerPosition,
+    MapRightBar,
+    AddMarkerPositionType,
+    PayloadActiveMarker
+} from '../../interface/interface_default'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 type SetAddMarker = AddMarkerPositionType | null
@@ -13,7 +19,10 @@ const initialState: MapInit = {
     mapRightBar: "hide",
     addMarkerPosition: null,
     stopPosition: null,
-    lastlocation: ""
+    lastlocation: "",
+    activeMarker: {
+        photos: []
+    }
 };
 
 const mapSlice = createSlice({
@@ -49,6 +58,9 @@ const mapSlice = createSlice({
         },
         setMapLastLocation: (state, action: PayloadAction<string>) => {
             state.lastlocation = action.payload
+        },
+        setDataActiveMarker: (state, action: PayloadAction<PayloadActiveMarker>) => {
+            state.activeMarker = { ...state.activeMarker, ...action.payload }
         }
     },
 });

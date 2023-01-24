@@ -2,7 +2,7 @@ import React from 'react';
 import CSS from 'csstype';
 import { AuthData } from '../models/authdata'
 import { Socket } from "socket.io-client";
-
+import { AvatarModel } from "../models/avatar"
 export interface ServerToClientEvents {
 
 }
@@ -58,6 +58,9 @@ export interface SupportInit {
 export interface ProfileInit {
     scrollMemory: number
 }
+export interface MarkerMainBox {
+    photos: AvatarModel[]
+}
 export interface MapInit {
     createMarkerMod: boolean,
     mapBar: boolean,
@@ -67,7 +70,8 @@ export interface MapInit {
     mapRightBar: MapRightBar,
     addMarkerPosition: null | AddMarkerPositionType
     stopPosition: null | AddMarkerPositionType,
-    lastlocation: string
+    lastlocation: string,
+    activeMarker: MarkerMainBox
 }
 
 export interface TowardsPosition {
@@ -117,4 +121,8 @@ export interface PhotoSliderData {
 
 export interface PhotoSliderProps {
     slides: PhotoSliderData[]
+}
+
+export interface PayloadActiveMarker {
+    photos?: AvatarModel[]
 }
