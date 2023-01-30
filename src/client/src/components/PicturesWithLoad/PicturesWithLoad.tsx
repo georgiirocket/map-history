@@ -9,9 +9,9 @@ import "../../sass/_pictures_with_load.scss"
 
 
 export const PicturesWithLoad: React.FC<PicturesWithLoadProps> = ({
-    src, styleBox, styleImg,
-    widthPictures = "345",
-    heightPictures = "345",
+    src, styleBox = {}, styleImg,
+    widthPictures = "345px",
+    heightPictures = "345px",
     lazyLoading = "eager",
     disabled = false
 }) => {
@@ -48,7 +48,12 @@ export const PicturesWithLoad: React.FC<PicturesWithLoadProps> = ({
                     onError={() => setLoadedError(true)}
                     width={widthPictures}
                     height={heightPictures}
-                    style={{ ...styleImg, cursor: disabled ? "auto" : "pointer" }}
+                    style={{
+                        ...styleImg,
+                        cursor: disabled ? "auto" : "pointer",
+                        width: widthPictures,
+                        height: heightPictures
+                    }}
                     loading={lazyLoading}
                 />
             </ControlledZoom>

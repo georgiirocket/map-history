@@ -57,6 +57,10 @@ body {
     background: #555;
 }
 
+::-webkit-scrollbar-track {
+    border-radius: 5px;
+}
+
 .Toastify__toast-theme--dark {
     background: var(--DARK_BACKGROUND);
     box-shadow: 0px 0px 4px 1px var(--DARK_COLOR);

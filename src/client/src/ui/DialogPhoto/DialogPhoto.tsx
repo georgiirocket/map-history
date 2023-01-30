@@ -3,6 +3,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
+import { useTranslation } from "react-i18next";
 
 import { PhotoCard } from '../../components/PhotoCard/PhotoCard';
 import { Loading } from '../../components/Loading/Loading';
@@ -27,6 +29,7 @@ export const PhotoUiDialog: React.FC<PhotoUiDialogProps> = ({
     data,
     multiple = false
 }) => {
+    const { t } = useTranslation()
     const loadUploadFile = progressUplFile > 0 ? true : false
     const trigger = () => {
         let input: HTMLElement = document.querySelector('.inp-file') as HTMLElement
@@ -51,7 +54,18 @@ export const PhotoUiDialog: React.FC<PhotoUiDialogProps> = ({
                     <LinearWithValueLabel value={progressUplFile} />
                 </div>
                 <TransitionGroup className="center-photo-box">
-                    {data.map(d => (
+                    {!data.length ? (
+                        <CSSTransition
+                            timeout={0}
+                            classNames="avatar"
+                        >
+                            <div className='not-photo'>
+                                <Typography textAlign="center" variant="subtitle2" gutterBottom>
+                                    {t("photosCard.addPhotos")}
+                                </Typography>
+                            </div>
+                        </CSSTransition>
+                    ) : data.map(d => (
                         <CSSTransition
                             key={d.id}
                             timeout={cssTimeout}

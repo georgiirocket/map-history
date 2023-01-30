@@ -1,6 +1,53 @@
-.slide-container {
-    .slider-pictures {
-        width: calc(100% - 50px);
-        margin: 0 auto;
+@import './default';
+
+.slider-block {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+
+    .sl-icon {
+        transition: color .3s ease;
+
+        @media(hover: hover) {
+            &:hover {
+                color: $orange-color;
+            }
+        }
     }
+
+    .slide-container-custom {
+        display: flex;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 20px;
+
+        .slider-box {
+            transition: scale .3s ease;
+
+            @media(hover: hover) {
+                &:hover {
+                    scale: 1.05 1.05;
+                }
+            }
+
+            &:first-child {
+                margin-left: auto;
+            }
+
+            &:last-child {
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 568px) {
+            &::-webkit-scrollbar {
+                width: 0px;
+                height: 0px;
+            }
+        }
+    }
+
 }

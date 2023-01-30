@@ -123,7 +123,9 @@
     },
     "markerCreate": {
         "create": "New marker",
-        "currentMarker": "Marker"
+        "currentMarker": "Marker",
+        "addPhoto": "Add/remove photo...",
+        "titleAddPhoto": "Photos"
     },
     "activeMarkerRoute": {
         "photoDialogs": {
@@ -131,5 +133,8 @@
             "notActive": "Не использовать (Главное)",
             "remove": "Удалить"
         }
+    },
+    "photosCard": {
+        "addPhotos": "Нажмите - Добавить фото"
     }
 }

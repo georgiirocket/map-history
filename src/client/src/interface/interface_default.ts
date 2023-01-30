@@ -120,7 +120,10 @@ export interface PhotoSliderData {
 }
 
 export interface PhotoSliderProps {
-    slides: PhotoSliderData[]
+    slides: PhotoSliderData[],
+    width?: string,
+    height?: string,
+    scrollStap?: number
 }
 
 export interface PayloadActiveMarker {
