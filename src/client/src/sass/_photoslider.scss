@@ -8,13 +8,7 @@
     gap: 3px;
 
     .sl-icon {
-        transition: color .3s ease;
-
-        @media(hover: hover) {
-            &:hover {
-                color: $orange-color;
-            }
-        }
+        @extend %sl-icon;
     }
 
     .slide-container-custom {

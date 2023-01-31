@@ -124,8 +124,9 @@
     "markerCreate": {
         "create": "New marker",
         "currentMarker": "Marker",
-        "addPhoto": "Add/remove photo...",
-        "titleAddPhoto": "Photos"
+        "addPhoto": "Добавить/Удалить фото",
+        "titleAddPhoto": "Photos",
+        "menu": "Меню"
     },
     "activeMarkerRoute": {
         "photoDialogs": {
@@ -136,5 +137,10 @@
     },
     "photosCard": {
         "addPhotos": "Нажмите - Добавить фото"
+    },
+    "fullSlider": {
+        "title": "Презентация",
+        "close": "Закрыть",
+        "notPhoto": "Нет фото"
     }
 }

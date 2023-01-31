@@ -1,6 +1,7 @@
 .ph-box {
     position: relative;
     width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,4 +22,17 @@
 
 [data-rmiz-modal-overlay="visible"] {
     background-color: var(--BACKGROUND_SLIDER) !important;
+}
+
+[data-rmiz] {
+    width: 100%;
+    height: 100%;
+}
+
+[data-rmiz-content="found"] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

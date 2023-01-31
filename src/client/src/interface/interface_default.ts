@@ -108,10 +108,8 @@ export interface PicturesWithLoadProps {
     src: string,
     styleBox?: CSS.Properties,
     styleImg?: CSS.Properties,
-    widthPictures?: string,
-    heightPictures?: string,
     lazyLoading?: "eager" | "lazy",
-    disabled?: boolean
+    disabled?: boolean,
 }
 
 export interface PhotoSliderData {
@@ -123,9 +121,32 @@ export interface PhotoSliderProps {
     slides: PhotoSliderData[],
     width?: string,
     height?: string,
-    scrollStap?: number
+    scrollStap?: number,
+    addId: string
 }
 
 export interface PayloadActiveMarker {
     photos?: AvatarModel[]
+}
+
+export interface BtnMenuData {
+    title: string,
+    handler: () => void
+}
+
+export interface BtnMenuProps {
+    menuTitle?: string,
+    data: BtnMenuData[],
+    fullWidth?: boolean,
+    variant?: "contained" | "outlined" | "text",
+    size?: "large" | "medium" | "small"
+    startIcon?: React.ReactNode | undefined
+    endIcon?: React.ReactNode | undefined,
+    sx?: React.CSSProperties
+}
+
+export interface FullSliderProps {
+    open: boolean,
+    slides: PhotoSliderData[],
+    closeHandler: () => void
 }

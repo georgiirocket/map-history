@@ -3,22 +3,29 @@ import { v4 } from 'uuid';
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ContentRightBar } from "../../components/ContentRightBar/ContentRightBar";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import { PhotoSlider } from "../../components/PhotoSlider/PhotoSlider";
+import { PicturesWithLoad } from "../../components/PicturesWithLoad/PicturesWithLoad";
+import { FullSlider } from "../../components/Dialogs/FullSlider";
+import { BtnMenu } from "../../components/BtnMenu/BtnMenu";
 import { Loading } from "../../components/Loading/Loading";
 import { config } from "../../config/default";
 import { useAppSelector } from "../../hooks/useRedux";
 import { PhotoUiDialog } from "../../ui/DialogPhoto/DialogPhoto";
 import { AvatarModel, MarkerPhotoModel } from "../../models/avatar";
-import { PhotoUiDialogData, TypeOptions } from "../../interface/interface_default";
+import { PhotoUiDialogData, TypeOptions, BtnMenuData } from "../../interface/interface_default";
+import defImg from "../../images/default-image.jpg"
 import "../../sass/_markerbox.scss"
 
 export const MarkerInfo: React.FC = () => {
     const { addMarkerPosition } = useAppSelector(state => state.map)
     const { isAuth } = useAppSelector(state => state.global)
     const [loading, setLoading] = useState<boolean>(false)
+    const [fullSliderOpen, setFullSliderOpen] = useState<boolean>(false)
     const [photos, setPhotos] = useState<MarkerPhotoModel[]>([])
     const [addDialogPhoto, setAddDialogPhoto] = useState<boolean>(false)
     const [progressUplFile, setProgressUplFile] = useState<number>(0)
@@ -26,7 +33,35 @@ export const MarkerInfo: React.FC = () => {
     const { id } = useParams()
     const location = useLocation()
     const navigate = useNavigate()
+    const url: string = photos.find(u => u.activeScreen)?.url || ""
+    const styleFlag: React.CSSProperties = photos.length ? { opacity: 1 } : { opacity: 0 }
 
+    const towards = (p: "right" | "left") => {
+        let activeIndex: number = photos.findIndex(s => s.activeScreen)
+        if (activeIndex < 0) {
+            return
+        }
+        if (p === "right" && photos[activeIndex + 1]) {
+            setPhotos(prevState => prevState.
+                map((s, index) => index === (activeIndex + 1) ? ({ ...s, activeScreen: true }) : ({ ...s, activeScreen: false })))
+            return
+        }
+        if (p === "right" && !photos[activeIndex + 1]) {
+            setPhotos(prevState => prevState.
+                map((s, index) => index === 0 ? ({ ...s, activeScreen: true }) : ({ ...s, activeScreen: false })))
+            return
+        }
+        if (p === "left" && photos[activeIndex - 1]) {
+            setPhotos(prevState => prevState.
+                map((s, index) => index === (activeIndex - 1) ? ({ ...s, activeScreen: true }) : ({ ...s, activeScreen: false })))
+            return
+        }
+        if (p === "left" && !photos[activeIndex - 1]) {
+            setPhotos(prevState => prevState.
+                map((s, index) => index === (photos.length - 1) ? ({ ...s, activeScreen: true }) : ({ ...s, activeScreen: false })))
+            return
+        }
+    }
     const changeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || !e.target.files.length) {
             return
@@ -36,9 +71,15 @@ export const MarkerInfo: React.FC = () => {
             id: v4(),
             active: false,
             url: URL.createObjectURL(file),
-            file: file
+            file: file,
+            activeScreen: false
         }))
-        setPhotos(prevState => ([...dataFile, ...prevState]))
+        setPhotos(prevState => {
+            if (!prevState.find(u => u.activeScreen)) {
+                return ([...dataFile, ...prevState]).map((u, index) => index === 0 ? ({ ...u, activeScreen: true }) : ({ ...u }))
+            }
+            return ([...dataFile, ...prevState])
+        })
         e.target.files = null
     }
     const dataForDialog = (p: AvatarModel[]): PhotoUiDialogData[] => p.map(u => {
@@ -57,6 +98,17 @@ export const MarkerInfo: React.FC = () => {
             url: id === "new" ? u.url : config.apiConfig.getImage + u.url
         })
     }, [])
+
+    const btnData: BtnMenuData[] = [
+        {
+            title: t("markerCreate.addPhoto"),
+            handler: () => setAddDialogPhoto(true)
+        },
+        {
+            title: t("fullSlider.title"),
+            handler: () => setFullSliderOpen(true)
+        }
+    ]
 
     useEffect(() => {
         if (id === 'new' && !addMarkerPosition) {
@@ -78,10 +130,36 @@ export const MarkerInfo: React.FC = () => {
                         {/* <Typography textAlign="center" variant="subtitle2" gutterBottom>
                             Photo
                         </Typography> */}
-                        <PhotoSlider width="250px" height="200px" slides={dataForDialog(photos)} />
-                        <Button size="small" sx={{ marginTop: "10px" }} onClick={() => setAddDialogPhoto(true)} fullWidth variant="contained">{t("markerCreate.addPhoto")}</Button>
+                        {/* <PhotoSlider addId={"marker-slider"} width="250px" height="200px" slides={dataForDialog(photos)} /> */}
+                        <div className='pictures-view'>
+                            <ArrowCircleLeftIcon onClick={() => towards("left")} style={styleFlag} className="sl-icon" />
+                            <div className='img-box'>
+                                <PicturesWithLoad
+                                    styleImg={{
+                                        borderRadius: "5px",
+                                        maxWidth: "100%",
+                                        maxHeight: "100%"
+                                    }}
+                                    src={url ? url : defImg}
+                                />
+                            </div>
+                            <ArrowCircleRightIcon onClick={() => towards("left")} style={styleFlag} className="sl-icon" />
+                        </div>
+                        <BtnMenu
+                            sx={{ marginTop: "10px" }}
+                            menuTitle={t("markerCreate.menu")}
+                            size="small"
+                            fullWidth={true}
+                            endIcon={<ArrowDropDownIcon />}
+                            data={btnData}
+                        />
                     </div>
                 </Loading>
+                {fullSliderOpen && (<FullSlider
+                    open={fullSliderOpen}
+                    slides={dataForDialog(photos)}
+                    closeHandler={() => setFullSliderOpen(false)}
+                />)}
                 <PhotoUiDialog
                     open={addDialogPhoto}
                     activeLoading={loading}

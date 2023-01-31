@@ -30,7 +30,14 @@ export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, disabledMenu 
     const { t } = useTranslation()
     return (
         <Card className='photo-card-container' sx={{ maxWidth: 345 }}>
-            <PicturesWithLoad src={src} styleImg={{ objectFit: "cover" }} />
+            <PicturesWithLoad
+                src={src}
+                styleImg={{
+                    objectFit: "cover",
+                    width: "345px",
+                    height: "345px"
+                }}
+            />
             <CardContent className='c-content'>
                 <div className='left'>
                     <CheckCircleIcon sx={active ? { color: themeApp.ORANGE_COLOR } : {}} />

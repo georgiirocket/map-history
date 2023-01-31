@@ -1,0 +1,109 @@
+@import './default';
+
+.dialog-pp-container {
+    .fullslider-container {
+        grid-template-rows: 49px calc(100% - 103px) 54px;
+
+        .btn-block {
+            display: flex;
+            justify-content: center;
+        }
+
+        .sl-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: .5rem;
+
+            .pictures-view {
+                width: 100%;
+                height: calc(100% - 120px);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .img-box {
+                    width: 100%;
+                    height: 100%;
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    .skell-img {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                    }
+
+                    img {
+                        max-width: 100%;
+                        max-height: 100%
+                    }
+                }
+
+
+
+                .sl-icon {
+                    @extend %sl-icon;
+                    font-size: 40px;
+                    margin: 0 .5rem;
+
+                    @media(max-width: 568px) {
+                        font-size: 25px;
+                    }
+                }
+            }
+
+            .pictures-all {
+                width: 100%;
+                display: flex;
+                gap: 1rem;
+                overflow-x: auto;
+
+                &::-webkit-scrollbar-thumb {
+                    background: $orange-color;
+                }
+
+                .box-mini {
+                    width: 100px;
+                    height: 50px;
+                    transition: border .3s ease;
+                    border: 4px solid $light-line-color;
+                    border-radius: 5px;
+                    margin: 1rem 0;
+
+                    main[data-theme="dark"] & {
+                        border: 4px solid $dark-line-color;
+                    }
+
+                    img {
+                        cursor: pointer !important;
+                    }
+
+                    &:first-child {
+                        margin-left: auto;
+                    }
+
+                    &:last-child {
+                        margin-right: auto;
+                    }
+                }
+
+                .active-box-mini {
+                    border: 4px solid $orange-color;
+                }
+            }
+        }
+
+        .not-photo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+}

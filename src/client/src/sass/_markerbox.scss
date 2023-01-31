@@ -1,5 +1,49 @@
+@import './default';
+
 .marker-box {
     width: 100%;
     height: 100%;
     position: relative;
+
+    .pictures-view {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .img-box {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .skell-img {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            img {
+                max-width: 100%;
+                max-height: 100%
+            }
+        }
+
+
+
+        .sl-icon {
+            @extend %sl-icon;
+            margin: 0 .5rem;
+
+            @media (max-width: 568px) {
+                margin: 0 .3rem;
+            }
+        }
+    }
 }

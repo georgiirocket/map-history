@@ -10,8 +10,6 @@ import "../../sass/_pictures_with_load.scss"
 
 export const PicturesWithLoad: React.FC<PicturesWithLoadProps> = ({
     src, styleBox = {}, styleImg,
-    widthPictures = "345px",
-    heightPictures = "345px",
     lazyLoading = "eager",
     disabled = false
 }) => {
@@ -40,25 +38,23 @@ export const PicturesWithLoad: React.FC<PicturesWithLoadProps> = ({
             <ControlledZoom
                 isZoomed={isZoomed}
                 onZoomChange={handleZoomChange}
+                classDialog=""
             >
                 <img
                     alt="that wanaka tree"
                     src={src}
                     onLoad={() => setLoaded(false)}
                     onError={() => setLoadedError(true)}
-                    width={widthPictures}
-                    height={heightPictures}
                     style={{
-                        ...styleImg,
                         cursor: disabled ? "auto" : "pointer",
-                        width: widthPictures,
-                        height: heightPictures
+                        ...styleImg,
                     }}
                     loading={lazyLoading}
                 />
             </ControlledZoom>
             {loaded || loadedError ? (
                 <Skeleton className='sckell' variant="rectangular" width="100%" height="100%">
+                    {loaded && !loadedError && "Loading..."}
                     {loadedError ? "Sorry, can't get picture" : ""}
                 </Skeleton>
             ) : false}
