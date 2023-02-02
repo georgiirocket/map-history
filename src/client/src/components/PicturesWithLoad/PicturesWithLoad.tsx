@@ -38,10 +38,9 @@ export const PicturesWithLoad: React.FC<PicturesWithLoadProps> = ({
             <ControlledZoom
                 isZoomed={isZoomed}
                 onZoomChange={handleZoomChange}
-                classDialog=""
             >
                 <img
-                    alt="that wanaka tree"
+                    hidden={loadedError}
                     src={src}
                     onLoad={() => setLoaded(false)}
                     onError={() => setLoadedError(true)}
@@ -55,7 +54,7 @@ export const PicturesWithLoad: React.FC<PicturesWithLoadProps> = ({
             {loaded || loadedError ? (
                 <Skeleton className='sckell' variant="rectangular" width="100%" height="100%">
                     {loaded && !loadedError && "Loading..."}
-                    {loadedError ? "Sorry, can't get picture" : ""}
+                    {loadedError ? "Sorry, can't get a picture" : ""}
                 </Skeleton>
             ) : false}
         </div>

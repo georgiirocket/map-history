@@ -1,0 +1,5 @@
+@import './default';
+
+.cust-ta {
+    @extend %text-area-default;
+}

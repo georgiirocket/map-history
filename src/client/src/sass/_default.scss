@@ -3,6 +3,9 @@ $dark-line-color: rgba(255, 255, 255, 0.12);
 $dark-background: #232529;
 $light-line-color: rgba(0, 0, 0, 0.12);
 $card-box-shadow: 0px 0px 8px 4px rgba(12, 12, 13, 0.2);
+$BORDER_COLOR_DEFAULT: #bdbdbd;
+$BORDER_COLOR_FOCUS_DEFAULT: #1976d2;
+$COLOR_TEXT_LIGT_IN_DARK: #e2e3e7;
 
 
 %width-full {
@@ -62,7 +65,7 @@ $card-box-shadow: 0px 0px 8px 4px rgba(12, 12, 13, 0.2);
 %text-area-default {
     background: transparent;
     width: 100%;
-    border-color: var(--BORDER_COLOR_DEFAULT);
+    border-color: $BORDER_COLOR_DEFAULT;
     height: 150px;
     overflow-y: auto !important;
     min-height: 150px;
@@ -74,12 +77,11 @@ $card-box-shadow: 0px 0px 8px 4px rgba(12, 12, 13, 0.2);
 
     &:focus-visible {
         outline: none;
-        border-color: var(--BORDER_COLOR_FOCUS_DEFAULT);
+        border-color: $BORDER_COLOR_FOCUS_DEFAULT;
     }
 
-    main[data-theme="dark"] & {
-        color: currentColor;
-
+    [data-theme-html="dark"] & {
+        color: $COLOR_TEXT_LIGT_IN_DARK !important;
     }
 }
 

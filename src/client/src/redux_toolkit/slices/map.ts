@@ -4,8 +4,9 @@ import {
     MarkerPosition,
     MapRightBar,
     AddMarkerPositionType,
-    PayloadActiveMarker
+    PayloadActiveMarker,
 } from '../../interface/interface_default'
+import { MarkerPhotoModel } from '../../models/avatar';
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 type SetAddMarker = AddMarkerPositionType | null
@@ -22,6 +23,14 @@ const initialState: MapInit = {
     lastlocation: "",
     activeMarker: {
         photos: []
+    },
+    dataMarker: {
+        photos: [],
+        title: "",
+        description: "",
+        privat: false,
+        owner: "",
+        markerPosition: null
     }
 };
 
@@ -61,7 +70,16 @@ const mapSlice = createSlice({
         },
         setDataActiveMarker: (state, action: PayloadAction<PayloadActiveMarker>) => {
             state.activeMarker = { ...state.activeMarker, ...action.payload }
-        }
+        },
+        setMarkerPhotos: (state, action: PayloadAction<MarkerPhotoModel[]>) => {
+            state.dataMarker.photos = action.payload
+        },
+        setMarkerTitle: (state, action: PayloadAction<string>) => {
+            state.dataMarker.title = action.payload
+        },
+        setMarkerDescription: (state, action: PayloadAction<string>) => {
+            state.dataMarker.description = action.payload
+        },
     },
 });
 

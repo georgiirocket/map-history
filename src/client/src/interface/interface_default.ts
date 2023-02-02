@@ -2,7 +2,8 @@ import React from 'react';
 import CSS from 'csstype';
 import { AuthData } from '../models/authdata'
 import { Socket } from "socket.io-client";
-import { AvatarModel } from "../models/avatar"
+import { AvatarModel, MarkerPhotoModel } from "../models/avatar"
+
 export interface ServerToClientEvents {
 
 }
@@ -71,7 +72,15 @@ export interface MapInit {
     addMarkerPosition: null | AddMarkerPositionType
     stopPosition: null | AddMarkerPositionType,
     lastlocation: string,
-    activeMarker: MarkerMainBox
+    activeMarker: MarkerMainBox,
+    dataMarker: {
+        photos: MarkerPhotoModel[],
+        title: string,
+        description: string,
+        privat: boolean,
+        owner: string,
+        markerPosition: null | AddMarkerPositionType
+    }
 }
 
 export interface TowardsPosition {

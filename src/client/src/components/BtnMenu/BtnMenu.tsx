@@ -48,6 +48,7 @@ export const BtnMenu: React.FC<BtnMenuProps> = ({
             </Button>
 
             <Menu
+                className='btn-menu'
                 id="basic-menu"
                 anchorEl={anchorEl}
                 open={open}
@@ -59,6 +60,7 @@ export const BtnMenu: React.FC<BtnMenuProps> = ({
                 {data.map((d, index) => {
                     return (
                         <MenuItem
+                            style={{ width: "100%" }}
                             key={"bnt-nav" + index.toString()}
                             onClick={() => handleClose(d.handler)}
                         >{d.title}</MenuItem>

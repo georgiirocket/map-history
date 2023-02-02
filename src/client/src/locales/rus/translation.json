@@ -126,7 +126,11 @@
         "currentMarker": "Marker",
         "addPhoto": "Добавить/Удалить фото",
         "titleAddPhoto": "Photos",
-        "menu": "Меню"
+        "menu": "Меню",
+        "title": "Имя маркера",
+        "titleInfo": "Краткое название маркера",
+        "descriprionTitle": "Описание",
+        "descriprion": "Полное описание маркера. Вы можете полностью описать все, что к этому месту относится"
     },
     "activeMarkerRoute": {
         "photoDialogs": {
@@ -142,5 +146,9 @@
         "title": "Презентация",
         "close": "Закрыть",
         "notPhoto": "Нет фото"
+    },
+    "textDialog": {
+        "positive": "Ok",
+        "negative": "Закрыть"
     }
 }
