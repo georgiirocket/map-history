@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, ChangeEvent } from 'react'
-import { RequestContext } from '../../providers/Request';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Avatar from '@mui/material/Avatar';
@@ -26,28 +25,22 @@ import { SkeletorHidden } from '../../components/SceletorHidden/SkeletorHidden'
 import { useTranslation } from 'react-i18next';
 import { useAppSelector, useActions } from '../../hooks/useRedux'
 import { useWindowSize } from '../../hooks/useWindowResize';
-import { useSaveScroll } from '../../hooks/useSaveScroll';
 import { config } from '../../config/default';
+import { useLazyGetProfileInfoQuery, useUpdateProfileMutation } from '../../redux_toolkit/api/api';
 import '../../sass/_profile.scss'
 
 export const Profile: React.FC = () => {
     const { authData, language, theme, load: { loadingProfile } } = useAppSelector(state => state.global)
-    const { updateProfile, getProfileInfo } = useContext(RequestContext)
     const [nickname, setNickname] = useState<string>("")
     const [login, setLogin] = useState<string>("")
     const [password, setPassword] = useState<string>("")
-    const { scrollMemory } = useAppSelector(state => state.profile)
-    const { setLanguage, setProfilePhoto, setScrollMemoryProfile } = useActions()
+    const { setLanguage, setProfilePhoto } = useActions()
     const [showPass, setShowPass] = useState<boolean>(false)
     const [autoTheme, setAutoTheme] = useState<boolean>(localStorage.getItem('theme') ? false : true)
     const { t } = useTranslation()
     const { width } = useWindowSize()
-    const { ref: refScroll } = useSaveScroll({
-        startScrollValue: scrollMemory,
-        timeOut: 500,
-        handler: setScrollMemoryProfile,
-        containerName: 'content'
-    })
+    const [getProfileInfo] = useLazyGetProfileInfoQuery()
+    const [getUpdateProfile] = useUpdateProfileMutation()
     const handleChange = (event: SelectChangeEvent) => {
         setLanguage(event.target.value)
     };
@@ -70,22 +63,26 @@ export const Profile: React.FC = () => {
         setPassword(e.target.value)
     }
     const getData = async () => {
-        let res = await getProfileInfo()
+        const res = await getProfileInfo()
         if (res.data) {
-            setLogin(res.data.login)
-            setNickname(res.data.nickname)
+            setLogin(res.data.data.login)
+            setNickname(res.data.data.nickname)
         }
     }
     const submit = async () => {
-        let res = await updateProfile({ nickname, login, password })
-        if (!res.data) {
-            return
-        }
-        if (res.data.nickname) {
-            setNickname(res.data.nickname)
-        }
-        if (res.data.login) {
-            setLogin(res.data.login)
+        try {
+            const res = await getUpdateProfile({ nickname, login, password }).unwrap()
+            if (!res.data) {
+                return
+            }
+            if (res.data.nickname) {
+                setNickname(res.data.nickname)
+            }
+            if (res.data.login) {
+                setLogin(res.data.login)
+            }
+        } catch {
+            console.error("Update profile")
         }
     }
     useEffect(() => {
@@ -99,7 +96,7 @@ export const Profile: React.FC = () => {
     return (
         <div className='profile-container'>
             <Card className="rc">
-                <div ref={refScroll} className='content'>
+                <div className='content'>
                     <SkeletorHidden
                         customClass="img-cust"
                         pathImage={[logo]}

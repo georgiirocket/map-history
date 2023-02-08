@@ -23,7 +23,11 @@ export interface AddMarkerPositionType {
     zoom: number
 }
 
-export interface LoadingApp {
+interface LoadingAppType {
+    [key: string]: boolean;
+}
+
+export interface LoadingApp extends LoadingAppType {
     loading: boolean
     loadChecknickname: boolean
     loadCheckLogin: boolean

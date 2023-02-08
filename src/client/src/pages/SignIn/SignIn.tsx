@@ -13,9 +13,11 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from '../../hooks/useWindowResize'
-import { RequestContext } from '../../providers/Request'
+import { useSignInMutation } from '../../redux_toolkit/api/api';
+import { config } from '../../config/default';
 import '../../sass/_register.scss'
 
 interface NotAccessValidDataType {
@@ -34,7 +36,6 @@ const d_dataRegisterForm: DataRegisterFormType = {
 }
 
 export const SignIn: React.FC = () => {
-    const { signIn } = useContext(RequestContext)
     const { t } = useTranslation()
     const size = useWindowSize()
     const [notAccsessServer, setNotAcsessServer] = useState(false)
@@ -42,6 +43,8 @@ export const SignIn: React.FC = () => {
     const [notAccsessValidData, setNotAccsessValidData] = useState<NotAccessValidDataType>(d_notAccsessValidData)
     const [showPass, setShowPass] = useState<boolean>(false)
     const [blockdedForm, setBlockedForm] = useState<boolean>(false)
+    const navigate = useNavigate()
+    const [getSignIn] = useSignInMutation()
 
     const handleChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
         setNotAcsessServer(false)
@@ -81,13 +84,18 @@ export const SignIn: React.FC = () => {
     }
     const submit = async () => {
         setBlockedForm(true)
-        let data = await signIn({
-            login: dataRegisterForm.login,
-            password: dataRegisterForm.password
-        })
-        setBlockedForm(false)
-        if (data.error) {
-            setNotAcsessServer(true)
+        try {
+            await getSignIn({
+                login: dataRegisterForm.login,
+                password: dataRegisterForm.password
+            }).unwrap()
+            setBlockedForm(false)
+            navigate(config.routes.map)
+        } catch (e: any) {
+            setBlockedForm(false)
+            if (e.data && e.data.error) {
+                setNotAcsessServer(true)
+            }
         }
     }
     return (

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useContext, useEffect } from 'react'
+import React, { ChangeEvent, useState, useEffect } from 'react'
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -15,9 +15,14 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from '../../hooks/useWindowResize'
-import { RequestContext } from '../../providers/Request'
+import { useNavigate } from 'react-router-dom';
 import { useDebounce } from '../../hooks/useDebounce'
-
+import {
+    useLazyCheckLoginQuery,
+    useLazyCheckNicknameQuery,
+    useRegisterMutation
+} from '../../redux_toolkit/api/api';
+import { config } from '../../config/default';
 import '../../sass/_register.scss'
 
 interface NotAccessValidDataType {
@@ -42,7 +47,7 @@ interface R_props {
 }
 
 export const Register: React.FC<R_props> = ({ owner = false }) => {
-    const { checkNickname, register, checkLogin } = useContext(RequestContext)
+    let navigate = useNavigate()
     const { t } = useTranslation()
     const size = useWindowSize()
     const [showPass, setShowPass] = useState<boolean>(false)
@@ -51,6 +56,9 @@ export const Register: React.FC<R_props> = ({ owner = false }) => {
     const [blockdedForm, setBlockedForm] = useState<boolean>(false)
     const nickname = useDebounce<string>(dataRegisterForm.nickname, 1000)
     const login = useDebounce<string>(dataRegisterForm.login, 1000)
+    const [getCheckNickname] = useLazyCheckNicknameQuery()
+    const [getCheckLogin] = useLazyCheckLoginQuery()
+    const [getRegister] = useRegisterMutation()
 
     const handleChangeNickname = (event: ChangeEvent<HTMLInputElement>) => {
         setDataRegisterForm(prevState => ({ ...prevState, nickname: event.target.value }))
@@ -75,14 +83,14 @@ export const Register: React.FC<R_props> = ({ owner = false }) => {
         }
     }
     const chechNikn = async (p: string) => {
-        let data = await checkNickname(p)
-        if ((data.data && data.data.created) || p.length < 6 || p.length > 20) {
+        let data = await getCheckNickname(p)
+        if ((data.data && data.data.data.created) || p.length < 6 || p.length > 20) {
             setNotAccsessValidData(prevState => ({ ...prevState, nickname: true }))
         }
     }
     const chechLogin = async (p: string) => {
-        let data = await checkLogin(p)
-        if ((data.data && data.data.created) || p.length < 6 || p.length > 20) {
+        let data = await getCheckLogin(p)
+        if ((data.data && data.data.data.created) || p.length < 6 || p.length > 20) {
             setNotAccsessValidData(prevState => ({ ...prevState, login: true }))
         }
     }
@@ -103,14 +111,21 @@ export const Register: React.FC<R_props> = ({ owner = false }) => {
         return false
     }
     const submit = async () => {
-        setBlockedForm(true)
-        await register({
-            login: dataRegisterForm.login,
-            password: dataRegisterForm.password,
-            nickName: dataRegisterForm.nickname,
-            owner: owner
-        })
-        setBlockedForm(false)
+        try {
+            setBlockedForm(true)
+            const res = await getRegister({
+                login: dataRegisterForm.login,
+                password: dataRegisterForm.password,
+                nickName: dataRegisterForm.nickname,
+                owner: owner
+            }).unwrap()
+            setBlockedForm(false)
+            if (!res.error) {
+                navigate(config.routes.map)
+            }
+        } catch {
+            setBlockedForm(false)
+        }
     }
     useEffect(() => {
         if (login) {

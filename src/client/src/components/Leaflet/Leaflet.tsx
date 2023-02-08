@@ -101,7 +101,7 @@ export const Leaflet: React.FC = () => {
         <MapContainer
             className="leaflet-custom"
             style={{ height: '100%', width: '100%' }}
-            center={towardsSavedPosition.position} zoom={towardsSavedPosition.zoom} scrollWheelZoom={true}>
+            center={towardsSavedPosition.position} zoom={towardsSavedPosition.zoom} >
             <TileLayer
                 attribution='&amp;copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

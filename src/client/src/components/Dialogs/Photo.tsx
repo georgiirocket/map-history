@@ -1,6 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { RequestContext } from '../../providers/Request';
-import { AxiosRequestConfig } from "axios"
+import React, { useState, useEffect } from 'react';
 
 import { PhotoUiDialog } from '../../ui/DialogPhoto/DialogPhoto';
 
@@ -11,24 +9,33 @@ import { useTranslation } from 'react-i18next';
 import { AvatarModel } from '../../models/avatar'
 import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
+import { useUploadAvatarMutation } from '../../redux_toolkit/api/api';
+import {
+    useLazyGetImageUrlQuery,
+    useLazyChangeActiveAvatarQuery,
+    useRemoveAvatarMutation
+} from '../../redux_toolkit/api/api';
 import '../../sass/_dialogs_photo.scss'
 
 const sizeLimitFile: number = config.sizeLimitAvatarFile
 const possibleTypeFile: string[] = config.typeAvatarFile
 
 export const PhotoDialogs: React.FC = () => {
-    const { getImageUrl, uploadAvatar, changeActiveAvatar, removeAvatar } = useContext(RequestContext)
     const [loading, setLoading] = useState<boolean>(true)
     const [progressUplFile, setProgressUplFile] = useState<number>(0)
     const [url, setUrl] = useState<AvatarModel[]>([])
     const { dialogs, authData } = useAppSelector(state => state.global)
     const { setProfilePhoto, setUrlAvatar } = useActions()
     const { t } = useTranslation()
+    const [getUploadAvatar] = useUploadAvatarMutation()
+    const [getImageUrl] = useLazyGetImageUrlQuery()
+    const [getActiveAvatar] = useLazyChangeActiveAvatarQuery()
+    const [getRemoveAvatar] = useRemoveAvatarMutation()
 
     const getData = async () => {
         const res = await getImageUrl()
         if (res.data && !res.error) {
-            setUrl(res.data.url.map(i => {
+            setUrl(res.data.data.url.map(i => {
                 return ({
                     id: v4(),
                     url: i,
@@ -56,57 +63,56 @@ export const PhotoDialogs: React.FC = () => {
             toast(t("fileNotValid.maxPhoto"), { autoClose: 2000 })
             return
         }
-        const configReq: AxiosRequestConfig = {
-            onUploadProgress({ loaded, total }) {
-                const percentCompleted = (loaded / total) * 100
-                percentCompleted >= 100 ? setProgressUplFile(0) : setProgressUplFile(percentCompleted)
+        try {
+            setLoading(true)
+            const resData = await getUploadAvatar(file).unwrap()
+            if (resData.data && !resData.error) {
+                setUrl(prevState => {
+                    const newPhoto: AvatarModel = {
+                        id: v4(),
+                        url: resData.data,
+                        active: false
+                    }
+                    return [newPhoto, ...prevState]
+                })
             }
-        }
-        const uploadRes = await uploadAvatar(file, configReq)
-        if (uploadRes.data && !uploadRes.error) {
-            setUrl(prevState => {
-                const newPhoto: AvatarModel = {
-                    id: v4(),
-                    url: uploadRes.data,
-                    active: false
-                }
-                return [newPhoto, ...prevState]
-            })
-        }
-        if (uploadRes.error) {
+            if (resData.error) {
+                toast(t("errUploadAvatar"), { autoClose: 2000 })
+            }
+            setLoading(false)
+        } catch (e) {
+            setLoading(false)
             toast(t("errUploadAvatar"), { autoClose: 2000 })
-            console.error(uploadRes.error)
         }
-        setLoading(false)
     }
     const tougleUsePhoto = async (a: string) => {
-        const res = await changeActiveAvatar(a)
-        if (res.error) {
-            toast(t("Error Request"), { autoClose: 2000 })
-            return
+        try {
+            const res = await getActiveAvatar(a)
+            if (!res.data || res.error) {
+                return
+            }
+            setUrlAvatar(res.data.data.url_avatar)
+            setUrl(prevState => {
+                return !res.data?.data.url_avatar ? prevState.map(i => ({ ...i, active: false })) :
+                    prevState.map(i => i.url === res.data?.data.url_avatar ? ({ ...i, active: true }) : ({ ...i, active: false }))
+            })
+        } catch {
+            console.error("Active avatar error")
         }
-        if (!res.data) {
-            return
-        }
-        setUrlAvatar(res.data.url_avatar)
-        setUrl(prevState => {
-            return !res.data?.url_avatar ? prevState.map(i => ({ ...i, active: false })) :
-                prevState.map(i => i.url === res.data?.url_avatar ? ({ ...i, active: true }) : ({ ...i, active: false }))
-        })
     }
     const remove = async (id: string) => {
-        const res = await removeAvatar(id)
-        if (res.error) {
-            toast(t("Error Request"), { autoClose: 2000 })
-            return
+        try {
+            const res = await getRemoveAvatar(id).unwrap()
+            if (!res.data || res.error) {
+                return
+            }
+            if (authData?.url_avatar === res.data.deleteId) {
+                setUrlAvatar("")
+            }
+            setUrl(prevState => prevState.filter(i => i.url !== res.data.deleteId))
+        } catch (e) {
+            console.error("Remove avatar")
         }
-        if (!res.data) {
-            return
-        }
-        if (authData?.url_avatar === res.data.deleteId) {
-            setUrlAvatar("")
-        }
-        setUrl(prevState => prevState.filter(i => i.url !== res.data.deleteId))
     }
     const dataForDialog = (p: AvatarModel[]): PhotoUiDialogData[] => p.map(u => {
         const options: TypeOptions[] = [

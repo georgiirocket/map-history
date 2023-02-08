@@ -100,6 +100,10 @@ const globalSlice = createSlice({
                 state.authData.nickname = action.payload
             }
         },
+        setGlobalLoadOff: (state) => {
+            let keys = Object.fromEntries(Object.keys(state.load).map(i => ([i, false]))) as LoadingApp
+            state.load = keys
+        },
     },
 });
 

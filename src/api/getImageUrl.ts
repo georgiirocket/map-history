@@ -39,7 +39,6 @@ router.get("/", async (req, res) => {
 router.get("/active", async (req: Request<{}, {}, {}, ReqQueryActiveImage>, res) => {
     try {
         let query = req.query, hasActiveProperty = "active" in query
-
         if (!hasActiveProperty) {
             throw new Error(`not found field "active"`)
         }
@@ -61,6 +60,7 @@ router.get("/active", async (req: Request<{}, {}, {}, ReqQueryActiveImage>, res)
             return
         }
         answer.data.url_avatar = query.active
+
         res.json(answer)
     } catch (err: any) {
         const answer: Res<null> = {
