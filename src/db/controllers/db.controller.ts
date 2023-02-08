@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { ILogs, logs, IEvent, event } from "../../schema/schema"
 import { IUser, users } from "../../schema/user"
+import { marker, Imarker } from '../../schema/markers';
 import Grid from "gridfs-stream"
 
 const URL: string = process.env.MONGO_URL || ""
@@ -14,6 +15,7 @@ export class db_connect {
     users_model: mongoose.Model<IUser>
     logs_model: mongoose.Model<ILogs>
     event_model: mongoose.Model<IEvent>
+    markers_model: mongoose.Model<Imarker>
     constructor() {
         this._mapDB = mongoose.createConnection(URL, {
             directConnection: true,
@@ -29,6 +31,7 @@ export class db_connect {
         this.users_model = this._mapDB.model<IUser>("users", users)
         this.logs_model = this._mapDB.model<ILogs>("logs", logs)
         this.event_model = this._mapDB.model<IEvent>("events", event)
+        this.markers_model = this._mapDB.model<Imarker>("markers", marker)
     }
     mapdb_init(): void {
         console.log("Map db is initialized")

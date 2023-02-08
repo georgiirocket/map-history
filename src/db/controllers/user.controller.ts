@@ -12,25 +12,21 @@ export class user_controller {
     async checkLogin(l: string): Promise<IUser | null> {
         return await this.#users_model.findOne({ login: l })
     }
-
     async checkLoginWithoutId(l: string, id: string = ""): Promise<IUser | null> {
         return await this.#users_model.findOne({
             login: l,
             _id: { $ne: id }
         })
     }
-
     async checkNickname(n: string): Promise<IUser | null> {
         return await this.#users_model.findOne({ nickname: n })
     }
-
     async checkNicknameWithoutId(n: string, id: string = ""): Promise<IUser | null> {
         return await this.#users_model.findOne({
             nickname: n,
             _id: { $ne: id }
         })
     }
-
     async createUser(data: NewUserData): Promise<IUser> {
         if (data.owner) {
             const check_owner = await this.checkOwner()
@@ -44,7 +40,6 @@ export class user_controller {
         })
         return await newUser.save()
     }
-
     async findUserById(id: string = ""): Promise<IUser> {
         const user = await this.#users_model.findById(id)
         if (!user) {
@@ -52,7 +47,6 @@ export class user_controller {
         }
         return user
     }
-
     async checkOwner(): Promise<IUser | null> {
         return await this.#users_model.findOne({ role: { $all: ["owner"] } })
     }

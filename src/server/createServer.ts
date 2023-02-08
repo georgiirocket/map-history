@@ -17,6 +17,7 @@ import refreshTokenRoute from "../api/refreshToken"
 import filesRoute from "../api/files"
 import imageUrlRoute from "../api/getImageUrl"
 import profileRoute from "../api/profile"
+import markersRoute from "../api/markers"
 
 const app: Application = express();
 
@@ -29,6 +30,7 @@ const io = create_socket_server(server)
 app.use((req, _, next) => { req.io = io; next(); })
 
 app.use("/api/file", auth, filesRoute)
+app.use("/api/markers", auth, markersRoute)
 app.use("/api/image/url", auth, imageUrlRoute)
 app.use("/api/check-nickname", checknicknameRoute)
 app.use("/api/check-login", checkLogin)

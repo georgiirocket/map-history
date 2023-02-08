@@ -9,6 +9,9 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { deepOrange } from '@mui/material/colors';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -30,7 +33,15 @@ import "../../sass/_markerbox.scss"
 export const MarkerInfo: React.FC = () => {
     const { addMarkerPosition, dataMarker: { photos, title, description, privat, owner } } = useAppSelector(state => state.map)
     const { isAuth, authData } = useAppSelector(state => state.global)
-    const { setMarkerPhotos, setMarkerTitle, setMarkerDescription } = useActions()
+    const {
+        setMarkerPhotos,
+        setMarkerTitle,
+        setMarkerDescription,
+        setMarkerPrivat,
+        setActivePhotoMarker,
+        removePhotoMarker,
+        createNewMarkerPhotos
+    } = useActions()
     const [loading, setLoading] = useState<boolean>(false)
     const [fullSliderOpen, setFullSliderOpen] = useState<boolean>(false)
     const [addDialogPhoto, setAddDialogPhoto] = useState<boolean>(false)
@@ -82,16 +93,15 @@ export const MarkerInfo: React.FC = () => {
             file: file,
             activeScreen: false
         }))
-        const newPhotos = [...dataFile, ...photos]
-        setMarkerPhotos(!newPhotos.find(u => u.activeScreen) ? newPhotos
-            .map((u, index) => index === 0 ? ({ ...u, activeScreen: true }) : ({ ...u })) : newPhotos)
+        createNewMarkerPhotos(dataFile)
         e.target.files = null
     }
+
     const dataForDialog = (p: AvatarModel[]): PhotoUiDialogData[] => p.map(u => {
         const options: TypeOptions[] = [
-            [t("photoCard.btn.use"), 'u', () => console.log("use")],
-            [t("photoCard.btn.unUse"), 'un', () => console.log("unuse")],
-            [t("photoCard.btn.remove"), 'r', () => console.log("remove")]
+            [t("photoCard.btn.use"), 'u', () => setActivePhotoMarker(u.id)],
+            [t("photoCard.btn.unUse"), 'un', () => setActivePhotoMarker("")],
+            [t("photoCard.btn.remove"), 'r', () => removePhotoMarker(u.id)]
         ]
         const sf = (p: TypeOptions[]): TypeOptions[] => {
             return u.active ? p.filter(o => o[1] !== 'u') : p.filter(o => o[1] !== 'un')
@@ -108,12 +118,14 @@ export const MarkerInfo: React.FC = () => {
         {
             title: t("markerCreate.addPhoto"),
             handler: () => setAddDialogPhoto(true)
-        },
-        {
-            title: t("fullSlider.title"),
-            handler: () => setFullSliderOpen(true)
         }
     ]
+    if (id !== "new") {
+        btnData.push({
+            title: t("fullSlider.title"),
+            handler: () => setFullSliderOpen(true)
+        })
+    }
 
     useEffect(() => {
         if (id === 'new' && !addMarkerPosition) {
@@ -187,15 +199,33 @@ export const MarkerInfo: React.FC = () => {
                             <Card className="card-style" sx={{ maxWidth: "100%" }}>
                                 <CardContent>
                                     <Typography gutterBottom component="div">
+                                        {t("markerCreate.coordinates")}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {`Lat: ${addMarkerPosition?.latLng.lat}`}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {`Lat: ${addMarkerPosition?.latLng.lng}`}
+                                    </Typography>
+                                </CardContent>
+                                {id !== "new" && authData?.id === owner && (<CardActions className="action-btm">
+                                    <Button size="small">Edit</Button>
+                                </CardActions>)}
+                            </Card>
+                        </div>
+                        <div className="content-text">
+                            <Card className="card-style" sx={{ maxWidth: "100%" }}>
+                                <CardContent>
+                                    <Typography gutterBottom component="div">
                                         {t("markerCreate.title")}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
                                         {title || t("markerCreate.titleInfo")}
                                     </Typography>
                                 </CardContent>
-                                <CardActions className="action-btm">
+                                {(id === "new" || (id !== "new" && owner === authData?.id)) && (<CardActions className="action-btm">
                                     <Button onClick={() => setTitleDialog(true)} size="small">Edit</Button>
-                                </CardActions>
+                                </CardActions>)}
                             </Card>
                         </div>
                         <div className="content-text">
@@ -208,11 +238,33 @@ export const MarkerInfo: React.FC = () => {
                                         {description || t("markerCreate.descriprion")}
                                     </Typography>
                                 </CardContent>
-                                <CardActions className="action-btm">
-                                    <Button onClick={() => setDescriptionDialog(true)} size="small">Edit</Button>
-                                </CardActions>
+                                {(id === "new" || (id !== "new" && owner === authData?.id)) && (
+                                    <CardActions className="action-btm">
+                                        <Button onClick={() => setDescriptionDialog(true)} size="small">Edit</Button>
+                                    </CardActions>
+                                )}
                             </Card>
                         </div>
+                        {(id === "new" || (id !== "new" && owner === authData?.id)) && (
+                            <div className="content-text">
+                                <Card className="card-style" sx={{ maxWidth: "100%" }}>
+                                    <CardContent>
+                                        <Typography gutterBottom component="div">
+                                            {t("markerCreate.settings")}
+                                        </Typography>
+                                        <FormGroup>
+                                            <FormControlLabel control={<Checkbox
+                                                checked={privat}
+                                                onChange={(e) => setMarkerPrivat(e.target.checked)}
+                                            />} label={t("markerCreate.privat")} />
+                                        </FormGroup>
+                                    </CardContent>
+                                    <CardActions className="action-btm">
+                                        <Button onClick={() => setDescriptionDialog(true)} size="small">Edit</Button>
+                                    </CardActions>
+                                </Card>
+                            </div>
+                        )}
                     </div>
                 </Loading>
                 {fullSliderOpen && (<FullSlider

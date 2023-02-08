@@ -74,11 +74,37 @@ const mapSlice = createSlice({
         setMarkerPhotos: (state, action: PayloadAction<MarkerPhotoModel[]>) => {
             state.dataMarker.photos = action.payload
         },
+        createNewMarkerPhotos: (state, action: PayloadAction<MarkerPhotoModel[]>) => {
+            const newPhotos = [...action.payload, ...state.dataMarker.photos]
+            if (!newPhotos.find(u => u.activeScreen)) {
+                state.dataMarker.photos = newPhotos.map((u, index) => index === 0 ? ({ ...u, activeScreen: true }) : ({ ...u }))
+            } else {
+                state.dataMarker.photos = newPhotos
+            }
+        },
         setMarkerTitle: (state, action: PayloadAction<string>) => {
             state.dataMarker.title = action.payload
         },
         setMarkerDescription: (state, action: PayloadAction<string>) => {
             state.dataMarker.description = action.payload
+        },
+        setMarkerPrivat: (state, action: PayloadAction<boolean>) => {
+            state.dataMarker.privat = action.payload
+        },
+        setActivePhotoMarker: (state, action: PayloadAction<string>) => {
+            if (!action.payload) {
+                state.dataMarker.photos = state.dataMarker.photos.map(i => ({ ...i, active: false }))
+            } else {
+                state.dataMarker.photos = state.dataMarker.photos
+                    .map(i => i.id === action.payload ? ({ ...i, active: true }) : ({ ...i, active: false }))
+            }
+        },
+        removePhotoMarker: (state, action: PayloadAction<string>) => {
+            const newPhoto = state.dataMarker.photos.filter(i => i.id !== action.payload)
+            if (newPhoto.length && !newPhoto.find(i => i.activeScreen)) {
+                newPhoto[0].activeScreen = true
+            }
+            state.dataMarker.photos = newPhoto
         },
     },
 });

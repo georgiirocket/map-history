@@ -32,6 +32,7 @@ export const PhotoCard: React.FC<PropsPhotoCard> = ({ active, src, disabledMenu 
         <Card className='photo-card-container' sx={{ maxWidth: 345 }}>
             <PicturesWithLoad
                 src={src}
+                styleBox={{ width: "345px", height: "345px" }}
                 styleImg={{
                     objectFit: "cover",
                     width: "345px",

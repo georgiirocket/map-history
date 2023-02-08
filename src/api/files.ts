@@ -10,7 +10,6 @@ interface AnswerDeleteAvatar {
 }
 
 router.post('/avatar/upload', upload.single('file'), async (req, res) => {
-
     try {
         if (!req.file) {
             const answer: Res<null> = {
