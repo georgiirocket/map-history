@@ -30,6 +30,7 @@ const initialState: MapInit = {
         description: "",
         privat: false,
         owner: "",
+        nicknameOwner: "",
         markerPosition: null
     }
 };

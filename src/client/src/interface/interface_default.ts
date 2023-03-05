@@ -83,6 +83,7 @@ export interface MapInit {
         description: string,
         privat: boolean,
         owner: string,
+        nicknameOwner: string,
         markerPosition: null | AddMarkerPositionType
     }
 }
@@ -155,7 +156,8 @@ export interface BtnMenuProps {
     size?: "large" | "medium" | "small"
     startIcon?: React.ReactNode | undefined
     endIcon?: React.ReactNode | undefined,
-    sx?: React.CSSProperties
+    sx?: React.CSSProperties,
+    disabled?: boolean
 }
 
 export interface FullSliderProps {

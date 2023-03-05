@@ -20,14 +20,15 @@ import Avatar from '@mui/material/Avatar';
 import { PicturesWithLoad } from "../../components/PicturesWithLoad/PicturesWithLoad";
 import { FullSlider } from "../../components/Dialogs/FullSlider";
 import { BtnMenu } from "../../components/BtnMenu/BtnMenu";
-import { Loading } from "../../components/Loading/Loading";
 import { config } from "../../config/default";
 import { useAppSelector, useActions } from "../../hooks/useRedux";
 import { PhotoUiDialog } from "../../ui/DialogPhoto/DialogPhoto";
 import { AvatarModel, MarkerPhotoModel } from "../../models/avatar";
 import { PhotoUiDialogData, TypeOptions, BtnMenuData } from "../../interface/interface_default";
 import { TextDialog } from "../../components/Dialogs/Text";
+import { TextParse } from "../../components/TextParse/TextParse";
 import defImg from "../../images/logo/logo.svg"
+import { useCreateMarkerMutation } from "../../redux_toolkit/api/api";
 import "../../sass/_markerbox.scss"
 
 export const MarkerInfo: React.FC = () => {
@@ -42,7 +43,6 @@ export const MarkerInfo: React.FC = () => {
         removePhotoMarker,
         createNewMarkerPhotos
     } = useActions()
-    const [loading, setLoading] = useState<boolean>(false)
     const [fullSliderOpen, setFullSliderOpen] = useState<boolean>(false)
     const [addDialogPhoto, setAddDialogPhoto] = useState<boolean>(false)
     const [progressUplFile, setProgressUplFile] = useState<number>(0)
@@ -52,6 +52,8 @@ export const MarkerInfo: React.FC = () => {
     const { id } = useParams()
     const location = useLocation()
     const navigate = useNavigate()
+    const [createMarker, { isLoading: loading }] = useCreateMarkerMutation()
+
     const url: string = photos.find(u => u.activeScreen)?.url || ""
     const styleFlag: React.CSSProperties = photos.length > 1 ? { opacity: 1 } : { opacity: 0 }
 
@@ -142,131 +144,131 @@ export const MarkerInfo: React.FC = () => {
     return (
         <ContentRightBar title={id === "new" ? t("markerCreate.create") : t("markerCreate.currentMarker")}>
             <div className="marker-box">
-                <Loading active={loading}>
-                    <div>
-                        {titleDialog ? <TextDialog
-                            startValue={title}
-                            close={() => setTitleDialog(false)}
-                            handler={(val) => {
-                                setMarkerTitle(val)
-                                setTitleDialog(false)
-                            }}
-                            title={t("markerCreate.title")} /> : false}
-                        {descriptionDialog ? <TextDialog
-                            startValue={description}
-                            close={() => setDescriptionDialog(false)}
-                            handler={(val) => {
-                                setMarkerDescription(val)
-                                setDescriptionDialog(false)
-                            }}
-                            title={t("markerCreate.descriprionTitle")} /> : false}
-                        <div className='pictures-view'>
-                            <ArrowCircleLeftIcon onClick={() => towards("left")} style={styleFlag} className="sl-icon" />
-                            <div className='img-box'>
-                                <PicturesWithLoad
-                                    styleImg={{
-                                        borderRadius: "5px",
-                                        maxWidth: "100%",
-                                        maxHeight: "100%"
-                                    }}
-                                    src={url ? url : defImg}
-                                />
-                            </div>
-                            <ArrowCircleRightIcon onClick={() => towards("left")} style={styleFlag} className="sl-icon" />
+                <div>
+                    {titleDialog ? <TextDialog
+                        startValue={title}
+                        close={() => setTitleDialog(false)}
+                        handler={(val) => {
+                            setMarkerTitle(val)
+                            setTitleDialog(false)
+                        }}
+                        title={t("markerCreate.title")} /> : false}
+                    {descriptionDialog ? <TextDialog
+                        startValue={description}
+                        close={() => setDescriptionDialog(false)}
+                        handler={(val) => {
+                            setMarkerDescription(val)
+                            setDescriptionDialog(false)
+                        }}
+                        title={t("markerCreate.descriprionTitle")} /> : false}
+                    <div className='pictures-view'>
+                        <ArrowCircleLeftIcon onClick={() => towards("left")} style={styleFlag} className="sl-icon" />
+                        <div className='img-box'>
+                            <PicturesWithLoad
+                                styleImg={{
+                                    borderRadius: "5px",
+                                    maxWidth: "100%",
+                                    maxHeight: "100%"
+                                }}
+                                src={url ? url : defImg}
+                            />
                         </div>
-                        <BtnMenu
-                            sx={{ marginTop: "10px" }}
-                            menuTitle={t("markerCreate.menu")}
-                            size="small"
-                            fullWidth={true}
-                            endIcon={<ArrowDropDownIcon />}
-                            data={btnData}
-                        />
-                        <div className="content-text">
-                            <Card className="card-style avatar-box" sx={{ maxWidth: "100%" }}>
-                                <CardContent className="avatar-card">
-                                    {authData?.url_avatar ?
-                                        <Avatar className='avatar-cust' alt={authData.nickname} src={config.apiConfig.getImage + authData.url_avatar} /> :
-                                        <Avatar className='avatar-cust' sx={{ bgcolor: deepOrange[500] }}>{authData?.nickname.split('')[0] ?? 'A'}</Avatar>
-                                    }
-                                    <Typography className="nickname" variant="body2" color="text.secondary">
-                                        {authData?.nickname || "Not name"}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </div>
-                        <div className="content-text">
-                            <Card className="card-style" sx={{ maxWidth: "100%" }}>
-                                <CardContent>
-                                    <Typography gutterBottom component="div">
-                                        {t("markerCreate.coordinates")}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {`Lat: ${addMarkerPosition?.latLng.lat}`}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {`Lat: ${addMarkerPosition?.latLng.lng}`}
-                                    </Typography>
-                                </CardContent>
-                                {id !== "new" && authData?.id === owner && (<CardActions className="action-btm">
-                                    <Button size="small">Edit</Button>
-                                </CardActions>)}
-                            </Card>
-                        </div>
-                        <div className="content-text">
-                            <Card className="card-style" sx={{ maxWidth: "100%" }}>
-                                <CardContent>
-                                    <Typography gutterBottom component="div">
-                                        {t("markerCreate.title")}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {title || t("markerCreate.titleInfo")}
-                                    </Typography>
-                                </CardContent>
-                                {(id === "new" || (id !== "new" && owner === authData?.id)) && (<CardActions className="action-btm">
-                                    <Button onClick={() => setTitleDialog(true)} size="small">Edit</Button>
-                                </CardActions>)}
-                            </Card>
-                        </div>
-                        <div className="content-text">
-                            <Card className="card-style" sx={{ maxWidth: "100%" }}>
-                                <CardContent>
-                                    <Typography gutterBottom component="div">
-                                        {t("markerCreate.descriprionTitle")}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {description || t("markerCreate.descriprion")}
-                                    </Typography>
-                                </CardContent>
-                                {(id === "new" || (id !== "new" && owner === authData?.id)) && (
-                                    <CardActions className="action-btm">
-                                        <Button onClick={() => setDescriptionDialog(true)} size="small">Edit</Button>
-                                    </CardActions>
-                                )}
-                            </Card>
-                        </div>
-                        {(id === "new" || (id !== "new" && owner === authData?.id)) && (
-                            <div className="content-text">
-                                <Card className="card-style" sx={{ maxWidth: "100%" }}>
-                                    <CardContent>
-                                        <Typography gutterBottom component="div">
-                                            {t("markerCreate.settings")}
-                                        </Typography>
-                                        <FormGroup>
-                                            <FormControlLabel control={<Checkbox
-                                                checked={privat}
-                                                onChange={(e) => setMarkerPrivat(e.target.checked)}
-                                            />} label={t("markerCreate.privat")} />
-                                        </FormGroup>
-                                    </CardContent>
-                                    <CardActions className="action-btm">
-                                        <Button onClick={() => setDescriptionDialog(true)} size="small">Edit</Button>
-                                    </CardActions>
-                                </Card>
-                            </div>
-                        )}
+                        <ArrowCircleRightIcon onClick={() => towards("left")} style={styleFlag} className="sl-icon" />
                     </div>
-                </Loading>
+                    <BtnMenu
+                        disabled={loading}
+                        sx={{ marginTop: "10px" }}
+                        menuTitle={t("markerCreate.menu")}
+                        size="small"
+                        fullWidth={true}
+                        endIcon={<ArrowDropDownIcon />}
+                        data={btnData}
+                    />
+                    <div className="content-text">
+                        <Card className="card-style avatar-box" sx={{ maxWidth: "100%" }}>
+                            <CardContent className="avatar-card">
+                                {authData?.url_avatar ?
+                                    <Avatar className='avatar-cust' alt={authData.nickname} src={config.apiConfig.getImage + authData.url_avatar} /> :
+                                    <Avatar className='avatar-cust' sx={{ bgcolor: deepOrange[500] }}>{authData?.nickname.split('')[0] ?? 'A'}</Avatar>
+                                }
+                                <Typography className="nickname" variant="body2" color="text.secondary">
+                                    {authData?.nickname || "Not name"}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="content-text">
+                        <Card className="card-style" sx={{ maxWidth: "100%" }}>
+                            <CardContent>
+                                <Typography gutterBottom component="div">
+                                    {t("markerCreate.title")}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    {title ? <TextParse text={title.split("\n")} /> : t("markerCreate.titleInfo")}
+                                </Typography>
+                            </CardContent>
+                            {(id === "new" || (id !== "new" && owner === authData?.id)) && (<CardActions className="action-btm">
+                                <Button disabled={loading} onClick={() => setTitleDialog(true)} size="small">Edit</Button>
+                            </CardActions>)}
+                        </Card>
+                    </div>
+                    <div className="content-text">
+                        <Card className="card-style" sx={{ maxWidth: "100%" }}>
+                            <CardContent>
+                                <Typography gutterBottom component="div">
+                                    {t("markerCreate.descriprionTitle")}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    {description ? <TextParse text={description.split("\n")} /> : t("markerCreate.descriprion")}
+                                </Typography>
+                            </CardContent>
+                            {(id === "new" || (id !== "new" && owner === authData?.id)) && (
+                                <CardActions className="action-btm">
+                                    <Button disabled={loading} onClick={() => setDescriptionDialog(true)} size="small">Edit</Button>
+                                </CardActions>
+                            )}
+                        </Card>
+                    </div>
+                    <div className="content-text">
+                        <Card className="card-style" sx={{ maxWidth: "100%" }}>
+                            <CardContent>
+                                <Typography gutterBottom component="div">
+                                    {t("markerCreate.coordinates")}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    {`Lat: ${addMarkerPosition?.latLng.lat}`}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    {`Lat: ${addMarkerPosition?.latLng.lng}`}
+                                </Typography>
+                            </CardContent>
+                            {id !== "new" && authData?.id === owner && (<CardActions className="action-btm">
+                                <Button disabled={loading} size="small">Edit</Button>
+                            </CardActions>)}
+                        </Card>
+                    </div>
+                    {(id === "new" || (id !== "new" && owner === authData?.id)) && (
+                        <div className="content-text">
+                            <Card className="card-style" sx={{ maxWidth: "100%" }}>
+                                <CardContent>
+                                    <Typography gutterBottom component="div">
+                                        {t("markerCreate.settings")}
+                                    </Typography>
+                                    <FormGroup>
+                                        <FormControlLabel control={<Checkbox
+                                            disabled={loading}
+                                            checked={privat}
+                                            onChange={(e) => setMarkerPrivat(e.target.checked)}
+                                        />} label={t("markerCreate.privat")} />
+                                    </FormGroup>
+                                </CardContent>
+                                <CardActions className="action-btm">
+                                    <Button disabled={loading} onClick={() => setDescriptionDialog(true)} size="small">Edit</Button>
+                                </CardActions>
+                            </Card>
+                        </div>
+                    )}
+                </div>
                 {fullSliderOpen && (<FullSlider
                     open={fullSliderOpen}
                     slides={dataForDialog(photos)}

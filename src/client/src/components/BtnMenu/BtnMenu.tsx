@@ -15,7 +15,8 @@ export const BtnMenu: React.FC<BtnMenuProps> = ({
     startIcon = undefined,
     endIcon = undefined,
     size = "medium",
-    sx = {}
+    sx = {},
+    disabled = false
 }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -32,6 +33,7 @@ export const BtnMenu: React.FC<BtnMenuProps> = ({
     return (
         <div>
             <Button
+                disabled={disabled}
                 sx={sx}
                 size={size}
                 startIcon={startIcon}

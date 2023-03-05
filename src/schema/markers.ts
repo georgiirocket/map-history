@@ -6,36 +6,34 @@ export interface IMarkerImage {
     url: string
 }
 
-export interface IMerkerPosition {
+export interface IMarkerPosition {
     lat: number,
     lng: number
 }
 
 export interface Imarker extends Document {
-    _id: Types.ObjectId
+    _id: Types.ObjectId,
     owner: string,
-    privet: boolean,
+    privat: boolean,
     title: string,
     description: string,
-    position: IMerkerPosition
+    position: IMarkerPosition
     images: IMarkerImage[]
     ondelete: boolean
-    active: boolean
     dateCreate: Date
 }
 export interface NewMarkerData {
     owner: string,
-    privet: boolean,
+    privat: boolean,
     title: string,
     description: string,
-    position: IMerkerPosition
+    position: IMarkerPosition
     images: IMarkerImage[]
-    active: boolean
 }
 
 export const marker = new Schema<Imarker>({
     owner: { type: String, default: "" },
-    privet: { type: Boolean, default: false },
+    privat: { type: Boolean, default: false },
     title: { type: String, default: "" },
     description: { type: String, default: "" },
     images: { type: [], default: [] },
@@ -44,6 +42,5 @@ export const marker = new Schema<Imarker>({
         lng: { type: Number, default: 0 }
     },
     ondelete: { type: Boolean, default: false },
-    active: { type: Boolean, default: false },
     dateCreate: { type: Date, default: Date.now }
 })

@@ -84,11 +84,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
         req.userId = decoded.userId
         next()
     } catch (e) {
-        res.status(401).json(<Res<null>>{
-            status: 0,
-            data: null,
-            error: "not auth"
-        })
+        res.status(401).json({ error: "not auth" })
     }
 }
 

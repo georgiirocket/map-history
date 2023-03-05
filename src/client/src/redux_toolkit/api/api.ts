@@ -20,6 +20,7 @@ import {
     ResGetProfileInfo,
     ReqUpdateDataProfile
 } from "../../models/def_model"
+import { CreateMarkerResponse, CreateMarkerRequest } from "../../models/createMarker"
 import { config } from "../../config/default"
 
 interface Res<T> {
@@ -407,6 +408,45 @@ export const mapApi = createApi({
                 }
             },
         }),
+        createMarker: build.mutation<CreateMarkerResponse, CreateMarkerRequest>({
+            async queryFn(arg, _api, _extraOptions, bs) {
+                try {
+                    const formdata = new FormData()
+                    arg.photos.forEach(photo => {
+                        if (photo.file) {
+                            formdata.append("file", photo.file)
+                        }
+                    })
+                    formdata.append("text", JSON.stringify({
+                        owner: arg.owner,
+                        privat: arg.privat,
+                        title: arg.title,
+                        description: arg.description,
+                        position: arg.position,
+                        images: []
+                    }))
+                    const result = await bs({
+                        url: config.apiConfig.createMarker,
+                        method: "POST",
+                        body: formdata
+                    });
+                    if (result.error) {
+                        toast.error("Create marker", { autoClose: 2000 })
+                        return ({
+                            error: result.error as FetchBaseQueryError
+                        })
+                    }
+                    let resData = result.data as CreateMarkerResponse
+                    return ({ data: resData })
+                } catch (e) {
+                    toast.error("Create marker", { autoClose: 2000 })
+                    return ({
+                        error: e as FetchBaseQueryError
+                    })
+                }
+            },
+        }),
+
     })
 })
 
@@ -424,5 +464,6 @@ export const {
     useLazyChangeActiveAvatarQuery,
     useRemoveAvatarMutation,
     useLazyGetProfileInfoQuery,
-    useUpdateProfileMutation
+    useUpdateProfileMutation,
+    useCreateMarkerMutation
 } = mapApi

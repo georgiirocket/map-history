@@ -47,11 +47,13 @@
         }
     }
 
+
     .content-text {
         margin-top: .5rem;
 
         .card-style {
-            border: 1px solid $light-line-color;
+            border: 2px solid $light-line-color;
+            transition: border .3s ease;
 
             .action-btm {
                 display: flex;

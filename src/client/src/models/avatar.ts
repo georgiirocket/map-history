@@ -5,6 +5,6 @@ export interface AvatarModel {
 }
 
 export interface MarkerPhotoModel extends AvatarModel {
-    file: File,
+    file: File | null,
     activeScreen: boolean
 }
