@@ -16,6 +16,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Avatar from '@mui/material/Avatar';
+import { toast } from "react-toastify"
 
 import { PicturesWithLoad } from "../../components/PicturesWithLoad/PicturesWithLoad";
 import { FullSlider } from "../../components/Dialogs/FullSlider";
@@ -45,17 +46,17 @@ export const MarkerInfo: React.FC = () => {
     } = useActions()
     const [fullSliderOpen, setFullSliderOpen] = useState<boolean>(false)
     const [addDialogPhoto, setAddDialogPhoto] = useState<boolean>(false)
-    const [progressUplFile, setProgressUplFile] = useState<number>(0)
     const [titleDialog, setTitleDialog] = useState<boolean>(false)
     const [descriptionDialog, setDescriptionDialog] = useState<boolean>(false)
     const { t } = useTranslation()
     const { id } = useParams()
     const location = useLocation()
     const navigate = useNavigate()
-    const [createMarker, { isLoading: loading }] = useCreateMarkerMutation()
+    const [createMarker, { isLoading: createMarkerLoading, data: newMarkerData }] = useCreateMarkerMutation()
 
     const url: string = photos.find(u => u.activeScreen)?.url || ""
     const styleFlag: React.CSSProperties = photos.length > 1 ? { opacity: 1 } : { opacity: 0 }
+    const loading = createMarkerLoading
 
     const towards = (p: "right" | "left") => {
         let activeIndex: number = photos.findIndex(s => s.activeScreen)
@@ -112,7 +113,7 @@ export const MarkerInfo: React.FC = () => {
             ...u,
             options,
             specialFilter: sf,
-            url: id === "new" ? u.url : config.apiConfig.getImage + u.url
+            url: id === "new" ? u.url : config.apiConfig.getPhotosMarkerUrl + u.url
         })
     }, [])
 
@@ -129,6 +130,29 @@ export const MarkerInfo: React.FC = () => {
         })
     }
 
+    const submit = (): void => {
+        if (!title || !description) {
+            toast.error("Title and Description are required fields", { autoClose: 2000 })
+            return
+        }
+        createMarker({
+            owner: owner,
+            title: title,
+            description: description,
+            privat: privat,
+            position: {
+                lat: addMarkerPosition?.latLng.lat || 0,
+                lng: addMarkerPosition?.latLng.lng || 0
+            },
+            photos: photos
+        })
+    }
+    useEffect(() => {
+        if (newMarkerData) {
+            navigate(config.routes.marker + "/" + newMarkerData.newMarkerId)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [newMarkerData])
     useEffect(() => {
         if (id === 'new' && !addMarkerPosition) {
             navigate(config.routes.map)
@@ -143,7 +167,7 @@ export const MarkerInfo: React.FC = () => {
     }, [id, isAuth])
     return (
         <ContentRightBar title={id === "new" ? t("markerCreate.create") : t("markerCreate.currentMarker")}>
-            <div className="marker-box">
+            <div style={{ filter: loading ? "blur(4px)" : "none" }} className="marker-box">
                 <div>
                     {titleDialog ? <TextDialog
                         startValue={title}
@@ -269,6 +293,11 @@ export const MarkerInfo: React.FC = () => {
                         </div>
                     )}
                 </div>
+                {(id === "new" || (id !== "new" && owner === authData?.id)) && (
+                    <Button onClick={submit} disabled={loading} sx={{ margin: "15px 0" }} fullWidth variant="contained">
+                        {id === "new" ? "Create" : "Update"}
+                    </Button>
+                )}
                 {fullSliderOpen && (<FullSlider
                     open={fullSliderOpen}
                     slides={dataForDialog(photos)}
@@ -278,7 +307,7 @@ export const MarkerInfo: React.FC = () => {
                     open={addDialogPhoto}
                     activeLoading={loading}
                     multiple={true}
-                    progressUplFile={progressUplFile}
+                    progressUplFile={0}
                     title={t("markerCreate.titleAddPhoto")}
                     closeBtnTitle={t("profile.btn.close")}
                     addBtnTitle={t("profile.btn.addPhoto")}

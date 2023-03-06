@@ -30,7 +30,7 @@ const io = create_socket_server(server)
 app.use((req, _, next) => { req.io = io; next(); })
 
 app.use("/api/file", auth, filesRoute)
-app.use("/api/markers", auth, markersRoute)
+app.use("/api/markers", markersRoute)
 app.use("/api/image/url", auth, imageUrlRoute)
 app.use("/api/check-nickname", checknicknameRoute)
 app.use("/api/check-login", checkLogin)

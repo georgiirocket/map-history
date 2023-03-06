@@ -17,7 +17,9 @@ export const config = {
         getImage: "/api/file/getavatar/",
         getProfileInfo: "/api/profile/info",
         editProfile: "/api/profile/edit",
-        createMarker: "/api/marker/create"
+        createMarker: "/api/markers/create",
+        getPhotosMarkerUrl: "/api/markers/pictures/",
+        getMarkerInfoDetails: "/api/markers/info-marker/"
     },
     routes: {
         map: '/map',

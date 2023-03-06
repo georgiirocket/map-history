@@ -22,6 +22,7 @@ import {
 } from "../../models/def_model"
 import { CreateMarkerResponse, CreateMarkerRequest } from "../../models/createMarker"
 import { config } from "../../config/default"
+import { mapActions } from "../slices/map"
 
 interface Res<T> {
     status: 0 | 1,
@@ -409,7 +410,7 @@ export const mapApi = createApi({
             },
         }),
         createMarker: build.mutation<CreateMarkerResponse, CreateMarkerRequest>({
-            async queryFn(arg, _api, _extraOptions, bs) {
+            async queryFn(arg, api, _extraOptions, bs) {
                 try {
                     const formdata = new FormData()
                     arg.photos.forEach(photo => {
@@ -423,7 +424,11 @@ export const mapApi = createApi({
                         title: arg.title,
                         description: arg.description,
                         position: arg.position,
-                        images: []
+                        images: arg.photos.map(p => ({
+                            id: p.id,
+                            active: p.active,
+                            url: p.url
+                        }))
                     }))
                     const result = await bs({
                         url: config.apiConfig.createMarker,
@@ -437,6 +442,8 @@ export const mapApi = createApi({
                         })
                     }
                     let resData = result.data as CreateMarkerResponse
+                    api.dispatch(mapActions.setAddMarker(null))
+                    api.dispatch(mapActions.setCreateMarkerMod(false))
                     return ({ data: resData })
                 } catch (e) {
                     toast.error("Create marker", { autoClose: 2000 })

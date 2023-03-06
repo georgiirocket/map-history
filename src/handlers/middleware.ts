@@ -71,6 +71,21 @@ export const deleteCockie = (res: Response) => {
     res.clearCookie("token")
 }
 
+export const checkUser = (req: Request): string | null => {
+    try {
+        let cookies: cookiesType = parse(req.headers.cookie || '');
+        if (!cookies.token) {
+            throw new Error("not field token")
+        }
+        const decoded = jwt.verify(cookies.token, JWTSK) as decodedType
+        if (decoded.type !== "access") {
+            throw new Error("fail access token")
+        }
+        return decoded.userId
+    } catch (e) {
+        return null
+    }
+}
 export const auth = (req: Request, res: Response, next: NextFunction) => {
     try {
         let cookies: cookiesType = parse(req.headers.cookie || '');
